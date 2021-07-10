@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SanManager : MonoBehaviour
 {
+    public ProgressBar san_bar;
     [Range(0, 100)]
     public int san_value = 100;
     [Header("san 值下降间隔")]
@@ -38,6 +39,7 @@ public class SanManager : MonoBehaviour
         last_san_value = san_value;
         // 派发事件
         san = (float)san_value/100.0f;
+        san_bar.SetProgress(san);
         var arg = new CRCustomArgs.OnSanValueChangedArg();
         arg.san = san;
         arg.san_value = san_value;
