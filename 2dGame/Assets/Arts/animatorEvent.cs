@@ -16,10 +16,10 @@ public class animatorEvent : MonoBehaviour
         prefab.position = this.transform.position;
         AudioSource audio = prefab.gameObject.AddComponent<AudioSource>();
         audio.clip = clip;
-        audio.spatialBlend = 0.8f;
-        audio.Play();
+        audio.spatialBlend = 0.85f;
         audio.loop = false;
-        Destroy(audio.gameObject, 5f);
+        audio.Play();
+        Destroy(audio.gameObject, 2f);
     }
 
     public Collider2D colid, colid2, colid3;

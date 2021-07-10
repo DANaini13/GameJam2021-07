@@ -537,7 +537,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerEnterChance: 0
-  triggerExitChance: 20
+  triggerExitChance: 33
   isOnce: 1
 --- !u!61 &7187484751292633449
 BoxCollider2D:
@@ -563,7 +563,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 10, y: 4}
+  m_Size: {x: 6, y: 4}
   m_EdgeRadius: 0
 --- !u!114 &7822024716676461027
 MonoBehaviour:
