@@ -11,6 +11,7 @@ public class GameControl : MonoBehaviour
     public Image game_win;
     public Transform player;
     public Transform monster;
+    public GameObject hand;
     
     private void Awake()
     {
@@ -25,6 +26,12 @@ public class GameControl : MonoBehaviour
     }
 
     public void OnGameOverEvent(object arg)
+    {
+        hand.SetActive(true);
+        Invoke("Over", 0.3f);
+    }
+
+    private void Over()
     {
         game_over.SetActive(true);
     }
