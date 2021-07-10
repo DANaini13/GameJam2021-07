@@ -167,6 +167,11 @@ public class PlayerControl : MonoBehaviour
             var hitted_item = other.gameObject.GetComponent<ScaryStuffGenerator>();
             hitted_item.CheckGenerate();
         }
+
+        if (other.gameObject.CompareTag("monster"))
+        {
+            CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_GAME_OVER, null);
+        }
     }
 
     public void OnTriggerExit2D(Collider2D other)
