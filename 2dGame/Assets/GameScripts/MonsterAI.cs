@@ -62,12 +62,12 @@ public class MonsterAI : MonoBehaviour
         if (cheasing_left)
         {
             transform.position -= new Vector3(walking_speed * Time.deltaTime, 0, 0);
-            transform.localScale = new Vector3(-1, 0, 0);
+            transform.localScale = new Vector3(-1, 1, 1);
         }
         else
         {
             transform.position -= new Vector3(-walking_speed * Time.deltaTime, 0, 0);
-            transform.localScale = new Vector3(1, 0, 0);
+            transform.localScale = new Vector3(1, 1, 1);
         }
     }
 

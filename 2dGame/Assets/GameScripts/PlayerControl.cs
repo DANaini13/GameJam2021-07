@@ -235,10 +235,14 @@ public class PlayerControl : MonoBehaviour
         if (hiding)
         {
             animator.SetBool("hide", true);
+            GetComponent<CapsuleCollider2D>().enabled = false;
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
         }
         else
         {
             animator.SetBool("hide", false);
+            GetComponent<CapsuleCollider2D>().enabled = true;
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
         }
     }
 }
