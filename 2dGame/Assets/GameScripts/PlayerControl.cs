@@ -20,7 +20,6 @@ public class PlayerControl : MonoBehaviour
     {
         var typed_arg = (CRCustomArgs.OnSanValueChangedArg) arg;
         // 通过san值决定使用哪个角色state
-        Debug.Log(typed_arg.san_value);
         if (typed_arg.san_value < play_state_dilimiters[0] && typed_arg.san_value >= play_state_dilimiters[1])
         {
             animator.SetInteger("state", 3);

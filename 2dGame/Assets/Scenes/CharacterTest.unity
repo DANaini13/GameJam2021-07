@@ -123,6 +123,24 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &19913482 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 278327087375671948, guid: ab566f41b8352cd47b54cd68f9deadd1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1366103235}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &19913485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19913482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd64b581b5b4647199eb3ce53a383939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &174247454
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,6 +486,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4912007322239989481, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_PointLightInnerAngle
+      value: 360
+      objectReference: {fileID: 0}
     - target: {fileID: 6824454637101910591, guid: ab566f41b8352cd47b54cd68f9deadd1,
         type: 3}
       propertyPath: m_Name
