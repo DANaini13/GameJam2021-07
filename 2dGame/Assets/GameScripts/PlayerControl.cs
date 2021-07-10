@@ -102,12 +102,12 @@ public class PlayerControl : MonoBehaviour
         bool walking_right = false;
         if (holding_A)
         { // 往左走
-            transform.position -= new Vector3(walking_speed, 0, 0);
+            transform.position -= new Vector3(walking_speed * Time.deltaTime, 0, 0);
             SetWalking(true);
             walking_right = false;
         }else if (holding_D)
         {// 往右走
-            transform.position -= new Vector3(-walking_speed, 0, 0);
+            transform.position -= new Vector3(-walking_speed * Time.deltaTime, 0, 0);
             SetWalking(true);
             walking_right = true;
         }
