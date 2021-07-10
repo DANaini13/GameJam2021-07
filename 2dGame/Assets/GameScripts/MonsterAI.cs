@@ -59,8 +59,16 @@ public class MonsterAI : MonoBehaviour
 
     void Cheasing()
     {
-        if (cheasing_left) transform.position -= new Vector3(walking_speed * Time.deltaTime, 0, 0);
-        else transform.position -= new Vector3(-walking_speed * Time.deltaTime, 0, 0);
+        if (cheasing_left)
+        {
+            transform.position -= new Vector3(walking_speed * Time.deltaTime, 0, 0);
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        else
+        {
+            transform.position -= new Vector3(-walking_speed * Time.deltaTime, 0, 0);
+            transform.localScale = new Vector3(1, 1, 1);
+        }
     }
 
     void StopCheasing()
