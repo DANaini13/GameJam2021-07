@@ -92,7 +92,7 @@ MonoBehaviour:
   width: 12
   height: 0
   angle: 0
-  num: 9
+  num: 7
   chance: 100
   minSize: 1
   maxSize: 1
@@ -163,6 +163,11 @@ PrefabInstance:
     - target: {fileID: 4646080003585674617, guid: ded992b930c8e4795bb9ffc4839419d0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707096343687578540, guid: ded992b930c8e4795bb9ffc4839419d0,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

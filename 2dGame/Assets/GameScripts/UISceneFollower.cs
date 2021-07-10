@@ -19,7 +19,7 @@ public class UISceneFollower : MonoBehaviour
     void Start()
     {
         init_time = Time.fixedTime;
-        FadeIn(1.0f);
+        FadeIn(0.25f);
         need_auto_destory = auto_destory_after > 0;
         start_time = Time.fixedTime;
         rect_transform = GetComponent<RectTransform>();
@@ -31,7 +31,7 @@ public class UISceneFollower : MonoBehaviour
     {
         if (Time.fixedTime - init_time > auto_destory_after && need_auto_destory)
         {
-            FadeOutAfter(1);
+            FadeOutAfter(0.25f);
         }
         if (rect_transform == null) return;
 

@@ -195,7 +195,7 @@ MonoBehaviour:
   m_ShadowVolumeIntensity: 0
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0
+  m_PointLightInnerRadius: 2
   m_PointLightOuterRadius: 2.5
   m_PointLightDistance: 3
   m_PointLightQuality: 1
@@ -444,7 +444,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2323725863924325721}
   - component: {fileID: 7133617926065163403}
-  - component: {fileID: 484912927285580195}
   m_Layer: 0
   m_Name: "\u624B\u7535\u7B52"
   m_TagString: Untagged
@@ -480,7 +479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LightType: 1
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.6
+  m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 0.9472225, b: 0.4575472, a: 1}
   m_Intensity: 1
   m_LightVolumeOpacity: 0
@@ -500,8 +499,8 @@ MonoBehaviour:
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 0.5
-  m_ShapeLightFalloffOffset: {x: 0.3, y: 0}
+  m_ShapeLightFalloffSize: 0.1
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
   m_ShapePath:
   - {x: 0.13694444, y: -0.13225317, z: 0}
   - {x: 6.1942825, y: -2.0083988, z: 0}
@@ -510,18 +509,6 @@ MonoBehaviour:
   - {x: 7.127239, y: 1.1938772, z: 0}
   - {x: 6.2065363, y: 1.8894465, z: 0}
   - {x: 0.13502432, y: -0.10720864, z: 0}
---- !u!114 &484912927285580195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931282639937984888}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd64b581b5b4647199eb3ce53a383939, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2438313982272232834
 GameObject:
   m_ObjectHideFlags: 0
