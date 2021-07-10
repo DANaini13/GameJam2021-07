@@ -22,6 +22,11 @@ public static class CRCustomArgs
     {
         public Vector3 position;
     }
+
+    public class ModifySanValueArg
+    {
+        public int diff;
+    }
 }
 
 public class CRCustomEvents
@@ -29,6 +34,9 @@ public class CRCustomEvents
     static public int ON_SAN_VALUE_CHANGED = 1;
     static public int GRAB_GATE_PAIR_POSITION = 2;
     static public int TRANS_PLAYER_TO_POSITION = 3;
+    static public int MODIFY_SAN_VALUE = 4;
+    static public int ON_GAME_OVER = 5;
+    static public int ON_ANSWER_WRONG = 6;
 }
 
 public class CREventSystem : MonoBehaviour

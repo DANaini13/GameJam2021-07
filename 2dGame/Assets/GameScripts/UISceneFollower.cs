@@ -14,9 +14,11 @@ public class UISceneFollower : MonoBehaviour
 
     private bool need_auto_destory = false;
     private float start_time = 0;
+    private float init_time = 0;
     
     void Start()
     {
+        init_time = Time.fixedTime;
         FadeIn(1.0f);
         need_auto_destory = auto_destory_after > 0;
         start_time = Time.fixedTime;
@@ -27,6 +29,10 @@ public class UISceneFollower : MonoBehaviour
     private bool started_destory = false;
     void Update()
     {
+        if (Time.fixedTime - init_time > auto_destory_after && need_auto_destory)
+        {
+            FadeOutAfter(1);
+        }
         if (rect_transform == null) return;
 
         if (fellowing_obj == null)

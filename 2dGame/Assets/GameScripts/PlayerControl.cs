@@ -148,18 +148,25 @@ public class PlayerControl : MonoBehaviour
     
     public void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.gameObject.CompareTag("trans_gate"))
-            return;
-        var hitted_trans_gate = other.gameObject.GetComponent<TransGate>();
-        if (current_trans_gate != null && current_trans_gate.gate_tag == hitted_trans_gate.gate_tag)
-            return;
-        current_trans_gate = hitted_trans_gate;
-        // 生成button
-        var fellower = Instantiate(floor_btn, canvas.transform).GetComponent<UISceneFollower>();
-        fellower.fellowing_obj = current_trans_gate.transform;
-        current_btn = fellower;
-        var button = fellower.GetComponent<UIButton>();
-        button.on_click = OnTransBtnClick;
+        if (other.gameObject.CompareTag("trans_gate"))
+        {
+            var hitted_trans_gate = other.gameObject.GetComponent<TransGate>();
+            if (current_trans_gate != null && current_trans_gate.gate_tag == hitted_trans_gate.gate_tag)
+                return;
+            current_trans_gate = hitted_trans_gate;
+            // 生成button
+            var fellower = Instantiate(floor_btn, canvas.transform).GetComponent<UISceneFollower>();
+            fellower.fellowing_obj = current_trans_gate.transform;
+            current_btn = fellower;
+            var button = fellower.GetComponent<UIButton>();
+            button.on_click = OnTransBtnClick;
+        }
+
+        if (other.gameObject.CompareTag("scary_item"))
+        {
+            var hitted_item = other.gameObject.GetComponent<ScaryStuffGenerator>();
+            hitted_item.CheckGenerate();
+        }
     }
 
     public void OnTriggerExit2D(Collider2D other)
