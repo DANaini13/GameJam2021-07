@@ -5,14 +5,18 @@ TagManager:
   serializedVersion: 2
   tags:
   - trans_gate
+  - hiding_place
+  - scary_item
+  - end_gate
+  - monster
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - monster
   - Water
   - UI
-  - 
+  - player
   - 
   - Ground Soft
   - Ground Hard
