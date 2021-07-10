@@ -550,7 +550,7 @@ MonoBehaviour:
   height: 0
   angle: 0
   num: 3
-  chance: 100
+  chance: 33
   minSize: 1
   maxSize: 1
   use_average: 1
