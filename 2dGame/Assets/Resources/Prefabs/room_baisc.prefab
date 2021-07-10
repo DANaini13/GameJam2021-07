@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1685556881311149972}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.57, y: -3.94, z: 0}
+  m_LocalPosition: {x: 0, y: -4.6, z: 0}
   m_LocalScale: {x: 40, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1685556881980181389}
@@ -284,7 +284,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1685556881980181389}
   m_Layer: 0
-  m_Name: Room_Basic
+  m_Name: room_baisc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -441,7 +441,11 @@ MonoBehaviour:
   - {fileID: 1114536379297130368, guid: 70e3d8089cbe8d544865f71da74905ec, type: 3}
   width: 12
   height: 1
+  angle: 0
   num: 12
+  chance: 100
+  use_average: 0
+  use_samePrefabIndex: 0
 --- !u!1 &1685556882887997727
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,4 +493,8 @@ MonoBehaviour:
   - {fileID: 1114536379297130368, guid: d90aef3e152d94043b64b0b7156ea82b, type: 3}
   width: 14
   height: 1
+  angle: 0
   num: 14
+  chance: 100
+  use_average: 0
+  use_samePrefabIndex: 0
