@@ -26,7 +26,6 @@ public class AlphaChangerBySanValue : MonoBehaviour
         var typed_arg = (CRCustomArgs.OnSanValueChangedArg) arg;
         // 通过san值决定透明度
         float alpha = 1.0f - typed_arg.san;
-        Debug.Log(alpha);
         foreach (var sprite_render in sprite_renders)
         {
             sprite_render.color = new Color(1, 1, 1, alpha);

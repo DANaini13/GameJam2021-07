@@ -7,6 +7,7 @@ public class PlayerControl : MonoBehaviour
 {
     public Animator animator;
     public Vector2 standard_vector;
+    public Vector3 player_offset;
     public List<int> play_state_dilimiters;
     private Vector3 main_role_position_on_screen;
 
@@ -41,7 +42,7 @@ public class PlayerControl : MonoBehaviour
 
     void Start()
     {
-        main_role_position_on_screen = Camera.main.WorldToScreenPoint(transform.position);
+        main_role_position_on_screen = Camera.main.WorldToScreenPoint(transform.position + player_offset);
         SetWalking(false);
     }
 

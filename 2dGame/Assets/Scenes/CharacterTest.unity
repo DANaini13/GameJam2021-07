@@ -593,6 +593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1849770449}
   standard_vector: {x: 0, y: 1}
+  player_offset: {x: 0, y: 1.5, z: 0}
   play_state_dilimiters: 64000000500000002800000000000000
   walking_speed: 0.04
   walking_speed_factor: 20
