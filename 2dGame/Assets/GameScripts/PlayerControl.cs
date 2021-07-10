@@ -14,6 +14,13 @@ public class PlayerControl : MonoBehaviour
     private void Awake()
     {
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this, OnSanValueChangedEvent);
+        CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.TRANS_PLAYER_TO_POSITION, this, TransToPositionEvent);
+    }
+    
+    private void OnDestroy()
+    {
+        CREventSystem.EraseCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this);
+        CREventSystem.EraseCustomeEventByKey(CRCustomEvents.TRANS_PLAYER_TO_POSITION, this);
     }
 
     void OnSanValueChangedEvent(object arg)
@@ -32,11 +39,6 @@ public class PlayerControl : MonoBehaviour
         {
             animator.SetInteger("state", 1);
         }
-    }
-
-    private void OnDestroy()
-    {
-        CREventSystem.EraseCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this);
     }
 
     void Start()
@@ -129,5 +131,18 @@ public class PlayerControl : MonoBehaviour
         if (this.walking == walking) return;
         animator.SetBool("walking", walking);
         this.walking = walking;
+    }
+
+    void TransToPositionEvent(object arg)
+    {
+        var typed_arg = (CRCustomArgs.TransPlayerToPositionArg) arg;
+        transform.position = typed_arg.position;
+    }
+
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.gameObject.CompareTag("trans_gate"))
+            return;
+        var trans_gate = other.gameObject.GetComponent<TransGate>();
     }
 }

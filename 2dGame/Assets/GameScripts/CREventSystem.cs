@@ -10,11 +10,25 @@ public static class CRCustomArgs
         public int san_value;
         public float san;
     }
+
+    public class GrabGatePairPositionArg
+    {
+        public int pair_key;
+        public int gate_tag;
+        public Nullable<Vector3> reslut;
+    }
+
+    public class TransPlayerToPositionArg
+    {
+        public Vector3 position;
+    }
 }
 
 public class CRCustomEvents
 {
     static public int ON_SAN_VALUE_CHANGED = 1;
+    static public int GRAB_GATE_PAIR_POSITION = 2;
+    static public int TRANS_PLAYER_TO_POSITION = 3;
 }
 
 public class CREventSystem : MonoBehaviour
