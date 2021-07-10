@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class PlayerControl : MonoBehaviour
     {
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this, OnSanValueChangedEvent);
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.TRANS_PLAYER_TO_POSITION, this, TransToPositionEvent);
+        floor_btn = Resources.Load("Prefabs/stair_btn") as GameObject;
     }
     
     private void OnDestroy()
@@ -139,10 +141,40 @@ public class PlayerControl : MonoBehaviour
         transform.position = typed_arg.position;
     }
 
+    private TransGate current_trans_gate = null;
+    private UISceneFollower current_btn = null;
+    private GameObject floor_btn = null;
+    public Canvas canvas;
+    
     public void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.gameObject.CompareTag("trans_gate"))
             return;
-        var trans_gate = other.gameObject.GetComponent<TransGate>();
+        var hitted_trans_gate = other.gameObject.GetComponent<TransGate>();
+        if (current_trans_gate != null && current_trans_gate.gate_tag == hitted_trans_gate.gate_tag)
+            return;
+        current_trans_gate = hitted_trans_gate;
+        // 生成button
+        var fellower = Instantiate(floor_btn, canvas.transform).GetComponent<UISceneFollower>();
+        fellower.fellowing_obj = current_trans_gate.transform;
+        current_btn = fellower;
+        var button = fellower.GetComponent<UIButton>();
+        button.on_click = OnTransBtnClick;
+    }
+
+    public void OnTriggerExit2D(Collider2D other)
+    {
+        if (!other.gameObject.CompareTag("trans_gate"))
+            return;
+        if (current_trans_gate == null) return;
+        current_btn.FadeOutAfter(1);
+        current_trans_gate = null;
+    }
+
+    public void OnTransBtnClick()
+    {
+        Debug.Log("sfdasdfsdf");
+        if (current_trans_gate == null) return;
+        current_trans_gate.Trans();
     }
 }

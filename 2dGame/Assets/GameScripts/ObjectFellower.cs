@@ -9,11 +9,11 @@ public class ObjectFellower : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Update();
+        LateUpdate();
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         transform.position = fellowing_obj.position + offset;
     }
