@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,11 +7,42 @@ public class PlayerControl : MonoBehaviour
 {
     public Animator animator;
     public Vector2 standard_vector;
+    public List<int> play_state_dilimiters;
     private Vector3 main_role_position_on_screen;
-    
+
+    private void Awake()
+    {
+        CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this, OnSanValueChangedEvent);
+    }
+
+    void OnSanValueChangedEvent(object arg)
+    {
+        var typed_arg = (CRCustomArgs.OnSanValueChangedArg) arg;
+        // 通过san值决定使用哪个角色state
+        Debug.Log(typed_arg.san_value);
+        if (typed_arg.san_value < play_state_dilimiters[0] && typed_arg.san_value >= play_state_dilimiters[1])
+        {
+            animator.SetInteger("state", 3);
+        }
+        if (typed_arg.san_value < play_state_dilimiters[1] && typed_arg.san_value >= play_state_dilimiters[2])
+        {
+            animator.SetInteger("state", 2);
+        }
+        if (typed_arg.san_value < play_state_dilimiters[2] && typed_arg.san_value >= play_state_dilimiters[3])
+        {
+            animator.SetInteger("state", 1);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        CREventSystem.EraseCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this);
+    }
+
     void Start()
     {
         main_role_position_on_screen = Camera.main.WorldToScreenPoint(transform.position);
+        SetWalking(false);
     }
 
     void Update()

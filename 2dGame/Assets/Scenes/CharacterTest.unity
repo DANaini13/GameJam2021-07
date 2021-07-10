@@ -382,7 +382,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1120212174
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -580,8 +580,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1849770449}
   standard_vector: {x: 0, y: 1}
+  play_state_dilimiters: 64000000500000002800000000000000
   walking_speed: 0.04
   walking_speed_factor: 20
+--- !u!114 &1366103241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366103237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a49d48c765f72416399a4ba1e44e03e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  san_value: 100
+  san_value_mines_interval: 5
+  san_value_mines_amount: 1
 --- !u!1 &1486478297
 GameObject:
   m_ObjectHideFlags: 0
