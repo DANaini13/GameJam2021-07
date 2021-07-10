@@ -225,7 +225,6 @@ public class PlayerControl : MonoBehaviour
 
     public void OnTransBtnClick()
     {
-        Debug.Log("sfdasdfsdf");
         if (current_trans_gate == null) return;
         current_trans_gate.Trans();
     }
@@ -233,6 +232,13 @@ public class PlayerControl : MonoBehaviour
     public void OnHiddingBtnClick()
     {
         hiding = !hiding;
-        //todo 调用动画aaaaaa
+        if (hiding)
+        {
+            animator.SetBool("hide", true);
+        }
+        else
+        {
+            animator.SetBool("hide", false);
+        }
     }
 }
