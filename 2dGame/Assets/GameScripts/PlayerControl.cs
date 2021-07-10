@@ -11,12 +11,14 @@ public class PlayerControl : MonoBehaviour
     public Vector3 player_offset;
     public List<int> play_state_dilimiters;
     private Vector3 main_role_position_on_screen;
+    private GameObject hidding_btn_prefab;
 
     private void Awake()
     {
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this, OnSanValueChangedEvent);
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.TRANS_PLAYER_TO_POSITION, this, TransToPositionEvent);
         floor_btn = Resources.Load("Prefabs/stair_btn") as GameObject;
+        hidding_btn_prefab = Resources.Load("Prefabs/hiding_btn") as GameObject;
     }
     
     private void OnDestroy()
@@ -53,6 +55,8 @@ public class PlayerControl : MonoBehaviour
     {
         UpdateKeys();
         UpdateLightDirection();
+        UpdateHiddingBtnState();
+        if (hiding) return;
         UpdateMovement();
     }
 
@@ -127,6 +131,19 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    void UpdateHiddingBtnState()
+    {
+        if (hidding_btn == null) return;
+        if (hiding)
+        {
+            hidding_btn_text.text = "离开";
+        }
+        else
+        {
+            hidding_btn_text.text = "躲藏";
+        }
+    }
+
     private bool walking = false;
     private void SetWalking(bool walking)
     {
@@ -144,6 +161,9 @@ public class PlayerControl : MonoBehaviour
     private TransGate current_trans_gate = null;
     private UISceneFollower current_btn = null;
     private GameObject floor_btn = null;
+    private UISceneFollower hidding_btn = null;
+    private Text hidding_btn_text = null;
+    private bool hiding = false;
     public Canvas canvas;
     
     public void OnTriggerEnter2D(Collider2D other)
@@ -170,17 +190,37 @@ public class PlayerControl : MonoBehaviour
 
         if (other.gameObject.CompareTag("monster"))
         {
+            if (hiding) return;
             CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_GAME_OVER, null);
+        }
+
+        if (other.gameObject.CompareTag("hiding_place"))
+        {
+            if (hidding_btn == null)
+            {
+                hidding_btn = Instantiate(hidding_btn_prefab, canvas.transform).GetComponent<UISceneFollower>();
+                hidding_btn.fellowing_obj = other.gameObject.transform;
+                hidding_btn.GetComponent<UIButton>().on_click = OnHiddingBtnClick;
+                hidding_btn_text = hidding_btn.transform.GetChild(0).GetComponent<Text>();
+            }
         }
     }
 
     public void OnTriggerExit2D(Collider2D other)
     {
-        if (!other.gameObject.CompareTag("trans_gate"))
-            return;
-        if (current_trans_gate == null) return;
-        current_btn.FadeOutAfter(1);
-        current_trans_gate = null;
+        if (other.gameObject.CompareTag("trans_gate"))
+        {
+            if (current_trans_gate == null) return;
+            current_btn.FadeOutAfter(1);
+            current_trans_gate = null;
+        }
+
+        if (other.gameObject.CompareTag("hiding_place"))
+        {
+            if (hidding_btn == null) return;
+            hidding_btn.FadeOutAfter(1);
+            hidding_btn = null;
+        }
     }
 
     public void OnTransBtnClick()
@@ -188,5 +228,11 @@ public class PlayerControl : MonoBehaviour
         Debug.Log("sfdasdfsdf");
         if (current_trans_gate == null) return;
         current_trans_gate.Trans();
+    }
+
+    public void OnHiddingBtnClick()
+    {
+        hiding = !hiding;
+        //todo 调用动画
     }
 }
