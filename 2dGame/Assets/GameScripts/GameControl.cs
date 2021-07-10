@@ -33,6 +33,7 @@ public class GameControl : MonoBehaviour
     {
         
         player.transform.position = new Vector3(0, -2.81f, 0);
+        player.GetComponent<SanManager>().san_value = 100;
         monster.transform.position = new Vector3(127.7f, 19.4f, 0);
         var sequence = DOTween.Sequence();
         sequence.Append(game_win.DOFade(1, 1.0f)).onStepComplete = () =>
