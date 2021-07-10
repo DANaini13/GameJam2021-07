@@ -307,6 +307,7 @@ Transform:
   - {fileID: 7027414939067288807}
   - {fileID: 3400685835110880453}
   - {fileID: 8318624622981622169}
+  - {fileID: 8146683566246017605}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -442,6 +443,60 @@ MonoBehaviour:
   angle: 45
   num: 14
   chance: 100
+  minSize: 1
+  maxSize: 1
+  use_average: 0
+  use_samePrefabIndex: 0
+--- !u!1 &7122035300605781367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8146683566246017605}
+  - component: {fileID: 680598367879129368}
+  m_Layer: 0
+  m_Name: trigger_thunder_creator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8146683566246017605
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7122035300605781367}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4646080003585674617}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &680598367879129368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7122035300605781367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bf96462fb4c6024896cc55a90063c88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabs:
+  - {fileID: 1114536379297130368, guid: 0ecbc7063ecb0dd40b022993fa62616d, type: 3}
+  width: 8
+  height: 0
+  angle: 0
+  num: 1
+  chance: 33
   minSize: 1
   maxSize: 1
   use_average: 0

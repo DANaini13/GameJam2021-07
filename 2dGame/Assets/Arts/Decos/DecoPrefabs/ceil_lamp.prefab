@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1114536379297130368}
+  - component: {fileID: 7880845486264031055}
   m_Layer: 0
   m_Name: ceil_lamp
   m_TagString: Untagged
@@ -29,13 +30,107 @@ Transform:
   m_Children:
   - {fileID: 1225827223140024781}
   - {fileID: 8827640608833322462}
-  - {fileID: 4996092388726459617}
   - {fileID: 2080695867495075151}
-  - {fileID: 1659999089297324835}
   - {fileID: 4947560537301945402}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &7880845486264031055
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181436302468107342}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: f4d76f999b697014b88ba0615c644dbe, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1388488585092027166
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,82 +203,6 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
---- !u!1 &1956159502757985987
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4996092388726459617}
-  - component: {fileID: 3018700081945404066}
-  - component: {fileID: 8866908764879534286}
-  m_Layer: 0
-  m_Name: scarry_generator (1)
-  m_TagString: scary_item
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4996092388726459617
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1956159502757985987}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: -2.47, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1114536379297130368}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &3018700081945404066
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1956159502757985987}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 5}
-  m_EdgeRadius: 0
---- !u!114 &8866908764879534286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1956159502757985987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30a270880d9894f23b94709d139018af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  btn_needs_to_tap: lamp_tap
-  btn_cannot_tap: lamp_normal
-  tap_btn_ratio: 0.3
-  stay_btn_ratio: 0.3
-  empty_ratio: 0.4
-  san_value_changed_when_wrong: -10
 --- !u!1 &3165571596904290583
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,7 +331,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1114536379297130368}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2672617988365374345
 BoxCollider2D:
@@ -354,9 +373,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   btn_needs_to_tap: lamp_tap
   btn_cannot_tap: lamp_normal
-  tap_btn_ratio: 0.3
-  stay_btn_ratio: 0.3
-  empty_ratio: 0.4
+  tap_btn_ratio: 0.15
+  stay_btn_ratio: 0.25
+  empty_ratio: 0.6
   san_value_changed_when_wrong: -10
 --- !u!1 &5953968056057782043
 GameObject:
@@ -388,7 +407,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1114536379297130368}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &4403214772803529790
 BoxCollider2D:
@@ -430,9 +449,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   btn_needs_to_tap: lamp_tap
   btn_cannot_tap: lamp_normal
-  tap_btn_ratio: 0.3
-  stay_btn_ratio: 0.3
-  empty_ratio: 0.4
+  tap_btn_ratio: 0.15
+  stay_btn_ratio: 0.25
+  empty_ratio: 0.6
   san_value_changed_when_wrong: -10
 --- !u!1 &6953153115511024234
 GameObject:
@@ -445,6 +464,9 @@ GameObject:
   - component: {fileID: 1225827223140024781}
   - component: {fileID: 1277497039044392365}
   - component: {fileID: 2248267869469215299}
+  - component: {fileID: 9023041787671358418}
+  - component: {fileID: 7187484751292633449}
+  - component: {fileID: 7822024716676461027}
   m_Layer: 0
   m_Name: anim
   m_TagString: Untagged
@@ -501,83 +523,64 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   frequency: 1
-  chance: 20
---- !u!1 &7073242098769303516
-GameObject:
+  chance: 40
+--- !u!114 &9023041787671358418
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1659999089297324835}
-  - component: {fileID: 5056128618051162206}
-  - component: {fileID: 5976781978090070548}
-  m_Layer: 0
-  m_Name: scarry_generator (3)
-  m_TagString: scary_item
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1659999089297324835
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7073242098769303516}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: -2.47, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1114536379297130368}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &5056128618051162206
+  m_GameObject: {fileID: 6953153115511024234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d2fd7bf1a67a4a4ca03e73d052e1994, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerEnterChance: 0
+  triggerExitChance: 20
+  isOnce: 1
+--- !u!61 &7187484751292633449
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7073242098769303516}
+  m_GameObject: {fileID: 6953153115511024234}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -3.89}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 5}
+  m_Size: {x: 10, y: 4}
   m_EdgeRadius: 0
---- !u!114 &5976781978090070548
+--- !u!114 &7822024716676461027
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7073242098769303516}
+  m_GameObject: {fileID: 6953153115511024234}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30a270880d9894f23b94709d139018af, type: 3}
+  m_Script: {fileID: 11500000, guid: 335372af62cfb02469e0cacba3053380, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn_needs_to_tap: lamp_tap
-  btn_cannot_tap: lamp_normal
-  tap_btn_ratio: 0.3
-  stay_btn_ratio: 0.3
-  empty_ratio: 0.4
-  san_value_changed_when_wrong: -10
+  clip: {fileID: 8300000, guid: 8eae99447ff9e274ca24260f1c712883, type: 3}
+  colid: {fileID: 2352582193347950733}
+  colid2: {fileID: 2672617988365374345}
+  colid3: {fileID: 4403214772803529790}
 --- !u!1 &7127011024372800708
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,7 +725,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   btn_needs_to_tap: lamp_tap
   btn_cannot_tap: lamp_normal
-  tap_btn_ratio: 0.3
-  stay_btn_ratio: 0.3
-  empty_ratio: 0.4
+  tap_btn_ratio: 0.15
+  stay_btn_ratio: 0.25
+  empty_ratio: 0.6
   san_value_changed_when_wrong: -10
