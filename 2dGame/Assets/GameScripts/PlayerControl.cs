@@ -233,6 +233,6 @@ public class PlayerControl : MonoBehaviour
     public void OnHiddingBtnClick()
     {
         hiding = !hiding;
-        //todo 调用动画
+        //todo 调用动画aaaaaa
     }
 }

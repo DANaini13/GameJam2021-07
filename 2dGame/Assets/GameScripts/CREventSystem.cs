@@ -37,6 +37,7 @@ public class CRCustomEvents
     static public int MODIFY_SAN_VALUE = 4;
     static public int ON_GAME_OVER = 5;
     static public int ON_ANSWER_WRONG = 6;
+    static public int ON_GAME_WIN = 7;
 }
 
 public class CREventSystem : MonoBehaviour

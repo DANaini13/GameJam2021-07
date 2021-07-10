@@ -10,6 +10,11 @@ public class TransGate : MonoBehaviour
 
     public void Trans()
     {
+        if (pair_key == -1)
+        {
+            CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_GAME_WIN, null);
+            return;
+        }
         var arg = new CRCustomArgs.GrabGatePairPositionArg();
         arg.pair_key = pair_key;
         arg.gate_tag = gate_tag;
