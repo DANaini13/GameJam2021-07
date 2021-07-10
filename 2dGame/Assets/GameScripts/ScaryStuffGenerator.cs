@@ -62,11 +62,19 @@ public class ScaryStuffGenerator : MonoBehaviour
 
     void OnTapBtnDidnotClick()
     {
+        if (tap_btn_clicked)
+        {
+            tap_btn_clicked = false;
+            return;
+        }
         ResultWrong();
     }
+
+    private bool tap_btn_clicked = false;
     
     void OnClickTapBtn()
     {
+        tap_btn_clicked = true;
         current_btn.FadeOutAfter(0);
     }
 
