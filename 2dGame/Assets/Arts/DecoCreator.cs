@@ -10,6 +10,8 @@ public class DecoCreator : MonoBehaviour
     public float angle;
     public int num;
     public float chance = 100f;
+    public float minSize = 1f;
+    public float maxSize = 1f;
 
     public bool use_average;
     public bool use_samePrefabIndex;
@@ -28,6 +30,7 @@ public class DecoCreator : MonoBehaviour
             Transform prefab = Instantiate(prefabs[Random.Range(0, prefabs.Length)], this.transform).transform;
             prefab.position = pos;
             prefab.Rotate(Vector3.forward * Random.Range(-angle, angle));
+            prefab.localScale = Vector3.one * Random.Range(minSize, maxSize);
 
             if (use_samePrefabIndex)
             {
