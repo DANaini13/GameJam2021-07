@@ -10,8 +10,8 @@ public class PlayerControl : MonoBehaviour
     public Vector2 standard_vector;
     public Vector3 player_offset;
     public List<int> play_state_dilimiters;
-    private Vector3 main_role_position_on_screen;
     private GameObject hidding_btn_prefab;
+    private bool is_near_hiding_point;
 
     private void Awake()
     {
@@ -20,7 +20,7 @@ public class PlayerControl : MonoBehaviour
         floor_btn = Resources.Load("Prefabs/stair_btn") as GameObject;
         hidding_btn_prefab = Resources.Load("Prefabs/hiding_btn") as GameObject;
     }
-    
+
     private void OnDestroy()
     {
         CREventSystem.EraseCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this);
@@ -29,7 +29,7 @@ public class PlayerControl : MonoBehaviour
 
     void OnSanValueChangedEvent(object arg)
     {
-        var typed_arg = (CRCustomArgs.OnSanValueChangedArg) arg;
+        var typed_arg = (CRCustomArgs.OnSanValueChangedArg)arg;
         // 通过san值决定使用哪个角色state
         if (typed_arg.san_value < play_state_dilimiters[0] && typed_arg.san_value >= play_state_dilimiters[1])
         {
@@ -47,7 +47,6 @@ public class PlayerControl : MonoBehaviour
 
     void Start()
     {
-        main_role_position_on_screen = Camera.main.WorldToScreenPoint(transform.position + player_offset);
         SetWalking(false);
     }
 
@@ -56,31 +55,73 @@ public class PlayerControl : MonoBehaviour
         UpdateKeys();
         UpdateLightDirection();
         UpdateHiddingBtnState();
-        if (hiding) return;
         UpdateMovement();
     }
 
+    [Header("瞄准的目标")]
+    public Transform aim_target;
+    [Header("瞄准点的圆心")]
+    public Transform aim_pivot;
+    [Header("瞄准点的圆形半径")]
+    public float aim_radius = 0.3f;
+    [Header("当旋转处于该角度区间时，对坐标进行等比修正")]
+    public Vector2 aim_fix_threshold = new Vector2(45f, 180f);
+    [Header("旋转等于该角度时，修正值达到最大")]
+    public float aim_fix_center_angle = 180f;
+    [Header("坐标修正最大值")]
+    public float aim_fix_offset = 1.2f;
+    [Header("角度大于该值时，不再旋转")]
+    public float aim_max_angle = 120f;
+
     private bool facing_right = true;
-    
+
     void UpdateLightDirection()
     {
-        // 算法描述： 计算鼠标和角色之间的方向向量，计算头顶的夹角。如果方向向量向右，不需要翻转，如果向左则需要翻转角色
         var mouse_pos = Input.mousePosition;
-        var light_direction_v3 = (mouse_pos - main_role_position_on_screen).normalized;
+        //得到旋转轴心的屏幕坐标
+        var start_position_on_screen = Camera.main.WorldToScreenPoint(aim_pivot.position);
+        //计算鼠标到轴心的方向向量
+        var light_direction_v3 = (mouse_pos - start_position_on_screen).normalized;
         var light_direction = new Vector2(light_direction_v3.x, light_direction_v3.y);
+
+        //计算电筒的夹角
         float angle = Vector2.Angle(standard_vector, light_direction);
+        //约束电筒角度
+        if (angle > aim_max_angle) angle = aim_max_angle;
+
+        //让瞄准点始终位于一个圆上
+        aim_target.position = (light_direction_v3 * aim_radius) + aim_pivot.position;
+        //=====修正
+        //瞄准越接近前方，瞄准点越往后方移动（方便手肘弯曲）
+        if (angle > aim_fix_threshold.x && angle < aim_fix_threshold.y)
+        {
+            //算出当前距离正前方的比例（1表示指向前方，0表示在阈值边缘）
+            float ratio = 0.0f;
+            if (angle < aim_fix_center_angle)
+                ratio = (angle - aim_fix_threshold.x) / (aim_fix_center_angle - aim_fix_threshold.x);
+            else
+                ratio = 1.0f - (angle - aim_fix_center_angle) / (aim_fix_threshold.y - aim_fix_center_angle);
+
+            var pos = aim_target.localPosition;
+            pos.x -= ratio * aim_fix_offset;
+            aim_target.localPosition = pos;
+        }
+
+        //翻转
         if (light_direction.x >= 0)
         {
             // 向右侧，无需翻转
             transform.localScale = new Vector3(1, 1);
-            animator.SetFloat("hand_rotation", 1 - angle/180.0f);
+            // animator.SetFloat("hand_rotation", 1 - angle / 180.0f);
+            aim_target.rotation = Quaternion.Euler(0f, 0f, -angle);
             facing_right = true;
         }
-        else if(light_direction.x < 0)
+        else if (light_direction.x < 0)
         {
             // 向左侧，需要翻转
             transform.localScale = new Vector3(-1, 1);
-            animator.SetFloat("hand_rotation", 1 - angle/180.0f);
+            // animator.SetFloat("hand_rotation", 1 - angle / 180.0f);
+            aim_target.rotation = Quaternion.Euler(0f, 0f, angle);
             facing_right = false;
         }
     }
@@ -93,25 +134,30 @@ public class PlayerControl : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A)) holding_A = true;
 
         if (Input.GetKeyUp(KeyCode.A)) holding_A = false;
-        
+
         if (Input.GetKeyDown(KeyCode.D)) holding_D = true;
 
         if (Input.GetKeyUp(KeyCode.D)) holding_D = false;
+
+        if (Input.GetKeyDown(KeyCode.E)) Hide();
     }
 
 
     public float walking_speed = 0.1f;
     public float walking_speed_factor = 10f;
-    
+
     void UpdateMovement()
     {
+        if (hiding) return;
+
         bool walking_right = false;
         if (holding_A)
         { // 往左走
             transform.position -= new Vector3(walking_speed * Time.deltaTime, 0, 0);
             SetWalking(true);
             walking_right = false;
-        }else if (holding_D)
+        }
+        else if (holding_D)
         {// 往右走
             transform.position -= new Vector3(-walking_speed * Time.deltaTime, 0, 0);
             SetWalking(true);
@@ -121,7 +167,9 @@ public class PlayerControl : MonoBehaviour
         {// 没走
             SetWalking(false);
         }
-        if(walking_right != facing_right)
+
+        //动画速度，面朝和移动方向一致时，为正，否则为负
+        if (walking_right != facing_right)
         {
             animator.SetFloat("walking_speed", walking_speed * walking_speed_factor);
         }
@@ -136,11 +184,11 @@ public class PlayerControl : MonoBehaviour
         if (hidding_btn == null) return;
         if (hiding)
         {
-            hidding_btn_text.text = "离开";
+            hidding_btn_text.text = "按下 E 离开";
         }
         else
         {
-            hidding_btn_text.text = "躲藏";
+            hidding_btn_text.text = "按下 E 躲藏";
         }
     }
 
@@ -154,7 +202,7 @@ public class PlayerControl : MonoBehaviour
 
     void TransToPositionEvent(object arg)
     {
-        var typed_arg = (CRCustomArgs.TransPlayerToPositionArg) arg;
+        var typed_arg = (CRCustomArgs.TransPlayerToPositionArg)arg;
         transform.position = typed_arg.position;
     }
 
@@ -165,9 +213,10 @@ public class PlayerControl : MonoBehaviour
     private Text hidding_btn_text = null;
     private bool hiding = false;
     public Canvas canvas;
-    
+
     public void OnTriggerEnter2D(Collider2D other)
     {
+        //传送门
         if (other.gameObject.CompareTag("trans_gate"))
         {
             var hitted_trans_gate = other.gameObject.GetComponent<TransGate>();
@@ -182,25 +231,29 @@ public class PlayerControl : MonoBehaviour
             button.on_click = OnTransBtnClick;
         }
 
+        //黄字
         if (other.gameObject.CompareTag("scary_item"))
         {
             var hitted_item = other.gameObject.GetComponent<ScaryStuffGenerator>();
             hitted_item.CheckGenerate();
         }
 
+        //怪物
         if (other.gameObject.CompareTag("monster"))
         {
             if (hiding) return;
             CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_GAME_OVER, null);
         }
 
+        //躲藏点
         if (other.gameObject.CompareTag("hiding_place"))
         {
+            is_near_hiding_point = true;
             if (hidding_btn == null)
             {
                 hidding_btn = Instantiate(hidding_btn_prefab, canvas.transform).GetComponent<UISceneFollower>();
                 hidding_btn.fellowing_obj = other.gameObject.transform;
-                hidding_btn.GetComponent<UIButton>().on_click = OnHiddingBtnClick;
+                // hidding_btn.GetComponent<UIButton>().on_click = Hide;
                 hidding_btn_text = hidding_btn.transform.GetChild(0).GetComponent<Text>();
             }
         }
@@ -217,9 +270,13 @@ public class PlayerControl : MonoBehaviour
 
         if (other.gameObject.CompareTag("hiding_place"))
         {
-            if (hidding_btn == null) return;
-            hidding_btn.FadeOutAfter(1);
-            hidding_btn = null;
+            if (!hiding)
+            {
+                is_near_hiding_point = false;
+                if (hidding_btn == null) return;
+                hidding_btn.FadeOutAfter(0.15f);
+                hidding_btn = null;
+            }
         }
     }
 
@@ -229,8 +286,14 @@ public class PlayerControl : MonoBehaviour
         current_trans_gate.Trans();
     }
 
-    public void OnHiddingBtnClick()
+    public void Hide()
     {
+        //与躲藏点处于交互状态才可以躲藏
+        if (!is_near_hiding_point) return;
+
+        //停止移动
+        SetWalking(false);
+
         hiding = !hiding;
         if (hiding)
         {

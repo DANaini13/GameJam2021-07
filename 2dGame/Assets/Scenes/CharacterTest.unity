@@ -3342,6 +3342,12 @@ PrefabInstance:
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3fb72add46255f4db0d35226fe13acf, type: 3}
+--- !u!4 &822740392 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2579889103847156409, guid: ab566f41b8352cd47b54cd68f9deadd1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1366103235}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &831143498
 GameObject:
   m_ObjectHideFlags: 0
@@ -5562,6 +5568,26 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 2586843221587114644, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_RotationAtRest.z
+      value: -99.545296
+      objectReference: {fileID: 0}
+    - target: {fileID: 2586843221587114644, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_RotationOffset.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624248324302763855, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624248324302763855, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.00000007840177
+      objectReference: {fileID: 0}
     - target: {fileID: 2905694143958327734, guid: ab566f41b8352cd47b54cd68f9deadd1,
         type: 3}
       propertyPath: m_Layer
@@ -5587,10 +5613,30 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 3808589038892437084, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.9999945
+      objectReference: {fileID: 0}
+    - target: {fileID: 3808589038892437084, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0033172553
+      objectReference: {fileID: 0}
     - target: {fileID: 4109854336557831366, guid: ab566f41b8352cd47b54cd68f9deadd1,
         type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261620089977000247, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_RotationAtRest.z
+      value: -78.07799
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261620089977000247, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_RotationOffset.z
+      value: -159.2589
       objectReference: {fileID: 0}
     - target: {fileID: 4487768897093423887, guid: ab566f41b8352cd47b54cd68f9deadd1,
         type: 3}
@@ -5606,6 +5652,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_PointLightInnerAngle
       value: 360
+      objectReference: {fileID: 0}
+    - target: {fileID: 5642201226864360803, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.6432888
+      objectReference: {fileID: 0}
+    - target: {fileID: 5642201226864360803, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5642201226864360803, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5642201226864360803, guid: ab566f41b8352cd47b54cd68f9deadd1,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7656237
       objectReference: {fileID: 0}
     - target: {fileID: 5860824354223870866, guid: ab566f41b8352cd47b54cd68f9deadd1,
         type: 3}
@@ -5849,6 +5915,13 @@ MonoBehaviour:
   standard_vector: {x: 0, y: 1}
   player_offset: {x: 0, y: 1.5, z: 0}
   play_state_dilimiters: 64000000500000002800000000000000
+  aim_target: {fileID: 822740392}
+  aim_pivot: {fileID: 1368235276}
+  aim_radius: 0.3
+  aim_fix_threshold: {x: 45, y: 180}
+  aim_fix_center_angle: 180
+  aim_fix_offset: 1.2
+  aim_max_angle: 120
   walking_speed: 3
   walking_speed_factor: 0.35
   canvas: {fileID: 1010934811}
@@ -5870,6 +5943,12 @@ MonoBehaviour:
   san_value_mines_amount: 1
   volume: {fileID: 1898564558}
   light: {fileID: 1505497385}
+--- !u!4 &1368235276 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5774919298000282733, guid: ab566f41b8352cd47b54cd68f9deadd1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1366103235}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1381040126
 GameObject:
   m_ObjectHideFlags: 0
