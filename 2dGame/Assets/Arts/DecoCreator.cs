@@ -39,7 +39,10 @@ public class DecoCreator : MonoBehaviour
                 Debug.Log(spIndex);
             }
             else
-                prefab.GetComponentInChildren<DecoChangeOnStart>().RandomSetSp();
+            {
+                var decoChange = prefab.GetComponentInChildren<DecoChangeOnStart>();
+                if (decoChange) decoChange.RandomSetSp();
+            }
         }
 
     }
