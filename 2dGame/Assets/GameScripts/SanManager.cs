@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class SanManager : MonoBehaviour
 {
@@ -57,6 +58,12 @@ public class SanManager : MonoBehaviour
         // 派发事件
         san = (float)san_value / 100.0f;
         san_bar.SetProgress(san);
+        var images = san_bar.GetComponentsInChildren<Image>();
+        foreach (var image in images)
+        {
+            if (image.transform == san_bar.transform) continue;
+            image.color = Color.Lerp(Color.red, Color.white, san);
+        }
         var arg = new CRCustomArgs.OnSanValueChangedArg();
         arg.san = san;
         arg.san_value = san_value;

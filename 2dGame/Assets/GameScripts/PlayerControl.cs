@@ -18,6 +18,7 @@ public class PlayerControl : MonoBehaviour
     private void Awake()
     {
         _instance = this;
+        breath_cur_vital_capacity = breath_max_vital_capacity;
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this, OnSanValueChangedEvent);
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.TRANS_PLAYER_TO_POSITION, this, TransToPositionEvent);
         floor_btn = Resources.Load("Prefabs/stair_btn") as GameObject;
@@ -59,6 +60,7 @@ public class PlayerControl : MonoBehaviour
         UpdateLightDirection();
         UpdateHiddingBtnState();
         UpdateMovement();
+        UpdateBreath();
     }
 
     [Header("瞄准的目标")]
@@ -147,6 +149,9 @@ public class PlayerControl : MonoBehaviour
         if (Input.GetMouseButtonDown(1)) TurnOnFlashLight();
 
         if (Input.GetKeyDown(KeyCode.T)) BreakFlashlight();
+
+        if (Input.GetKeyDown(KeyCode.LeftShift)) HoldBreath();
+        if (Input.GetKeyUp(KeyCode.LeftShift)) StartBreath();
     }
 
 
@@ -157,16 +162,18 @@ public class PlayerControl : MonoBehaviour
     {
         if (hiding) return;
 
+        float real_walking_speed = walking_speed * (is_hold_breath ? hold_breath_move_speed_multiplier : 1.0f);
+
         bool walking_right = false;
         if (holding_A)
         { // 往左走
-            transform.position -= new Vector3(walking_speed * Time.deltaTime, 0, 0);
+            transform.position -= new Vector3(real_walking_speed * Time.deltaTime, 0, 0);
             SetWalking(true);
             walking_right = false;
         }
         else if (holding_D)
         {// 往右走
-            transform.position -= new Vector3(-walking_speed * Time.deltaTime, 0, 0);
+            transform.position -= new Vector3(-real_walking_speed * Time.deltaTime, 0, 0);
             SetWalking(true);
             walking_right = true;
         }
@@ -178,11 +185,11 @@ public class PlayerControl : MonoBehaviour
         //动画速度，面朝和移动方向一致时，为正，否则为负
         if (walking_right != facing_right)
         {
-            animator.SetFloat("walking_speed", walking_speed * walking_speed_factor);
+            animator.SetFloat("walking_speed", real_walking_speed * walking_speed_factor);
         }
         else
         {
-            animator.SetFloat("walking_speed", walking_speed * walking_speed_factor * -1);
+            animator.SetFloat("walking_speed", real_walking_speed * walking_speed_factor * -1);
         }
     }
 
@@ -249,6 +256,7 @@ public class PlayerControl : MonoBehaviour
         if (other.gameObject.CompareTag("monster"))
         {
             if (hiding) return;
+            if (is_hold_breath) return;
             CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_GAME_OVER, null);
         }
 
@@ -382,4 +390,60 @@ public class PlayerControl : MonoBehaviour
         pos.z = 0f;
         ps.position = pos;
     }
+
+    public AudioClip sfx_hold_breath;
+    public AudioClip sfx_start_breath;
+    public float hold_breath_move_speed_multiplier = 0.33f;
+    public float breath_max_vital_capacity = 5f;
+    public ProgressBar breath_ui_vital_bar;
+    private float breath_cur_vital_capacity;
+    private float breath_vital_capacity_recovery_speed = 2f;
+    private bool is_hold_breath;
+    void HoldBreath()
+    {
+        animator.SetBool("hold_breath", true);
+        audio_source.clip = sfx_hold_breath;
+        audio_source.Play();
+        is_hold_breath = true;
+    }
+
+    void UpdateBreath()
+    {
+        if (!is_hold_breath)
+        {
+            if (breath_cur_vital_capacity < breath_max_vital_capacity)
+            {
+                breath_cur_vital_capacity += breath_vital_capacity_recovery_speed * Time.deltaTime;
+                if (breath_cur_vital_capacity > breath_max_vital_capacity)
+                    breath_cur_vital_capacity = breath_max_vital_capacity;
+            }
+        }
+        else
+        {
+            breath_cur_vital_capacity -= Time.deltaTime;
+            if (breath_cur_vital_capacity < 0)
+                StartBreath();
+        }
+        var ratio = breath_cur_vital_capacity / breath_max_vital_capacity;
+        breath_ui_vital_bar.SetProgress(ratio);
+        var images = breath_ui_vital_bar.GetComponentsInChildren<Image>();
+        foreach (var image in images)
+        {
+            if (image.transform == breath_ui_vital_bar.transform) continue;
+            image.color = Color.Lerp(Color.red, Color.white, ratio);
+        }
+    }
+
+    void StartBreath()
+    {
+        animator.SetBool("hold_breath", false);
+        var ratio = breath_cur_vital_capacity / breath_max_vital_capacity;
+        if (ratio < 0.5f)
+        {
+            audio_source.clip = sfx_start_breath;
+            audio_source.Play();
+        }
+        is_hold_breath = false;
+    }
+
 }
