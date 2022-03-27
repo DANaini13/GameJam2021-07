@@ -25,7 +25,7 @@ public class RandomTextGenerator1 : MonoBehaviour
         last_generate_time = Time.fixedTime;
         var text = Instantiate(prefab, transform);
         var index = Random.Range(0, gossip_points_holder.childCount);
-        var position = transform.GetChild(index).position;
+        var position = gossip_points_holder.GetChild(index).position;
         text.transform.position = position;
     }
 }
