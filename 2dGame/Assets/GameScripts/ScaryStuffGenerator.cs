@@ -101,7 +101,7 @@ public class ScaryStuffGenerator : MonoBehaviour
         CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.MODIFY_SAN_VALUE, arg);
         CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_ANSWER_WRONG, null);
         //玩家点击失败，会强制开始呼吸
-        PlayerControl._instance.StartBreath();
+        PlayerControl._instance.StartBreath(true);
     }
 
 }

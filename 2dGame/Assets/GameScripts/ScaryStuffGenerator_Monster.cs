@@ -43,8 +43,8 @@ public class ScaryStuffGenerator_Monster : MonoBehaviour
             fellower.fellowing_obj = transform;
             fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f, 0.25f), 3f);
             current_btn = fellower;
-            fellower.auto_destory_after = 3;
-            Invoke("OnTapBtnDidnotClick", 4.0f);
+            fellower.auto_destory_after = 1f;
+            Invoke("OnTapBtnDidnotClick", 2f);
         }
         else if (generating_index < stay_btn_index)
         {
@@ -53,7 +53,7 @@ public class ScaryStuffGenerator_Monster : MonoBehaviour
             fellower.GetComponent<UIButton>().on_click = OnClickStayBtn;
             fellower.fellowing_obj = transform;
             fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f, 0.25f), 2f);
-            fellower.auto_destory_after = 3;
+            fellower.auto_destory_after = 1f;
             current_btn = fellower;
         }
         Debug.Log("not");
@@ -94,7 +94,7 @@ public class ScaryStuffGenerator_Monster : MonoBehaviour
     {
         MonsterAI._instance.Fast();
         //玩家点击失败，会强制开始呼吸
-        PlayerControl._instance.StartBreath();
+        PlayerControl._instance.StartBreath(true);
     }
 
 }

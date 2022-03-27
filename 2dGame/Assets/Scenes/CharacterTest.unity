@@ -1370,6 +1370,16 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5391061477284722906, guid: b417dab0e9c87544b91f7993abf0d110,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5391061477284722906, guid: b417dab0e9c87544b91f7993abf0d110,
+        type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5860824354223870866, guid: b417dab0e9c87544b91f7993abf0d110,
         type: 3}
       propertyPath: m_Layer
@@ -2129,12 +2139,13 @@ MonoBehaviour:
   stay_interval: 10
   stay_distance: 25
   play_limit_distance: 15
-  cheasing_distance: 6.5
+  cheasing_distance: 6
   walking_speed: 3.5
   walking_speed_change: 0.4
   cheasing_interval: 10
   stay_points_holder: {fileID: 976525829}
   player: {fileID: 1366103236}
+  audio_source: {fileID: 343134525}
   is_cheasing: 0
   cheasing_left: 0
   haning_speed_multiplier: 0.33
@@ -2142,9 +2153,15 @@ MonoBehaviour:
   scary_item_prefab: {fileID: 8628783015783451378, guid: d59464413b3dd1f4b85f854fae93ddf9,
     type: 3}
   walking_speed_factor: 0.35
-  scary_item_distance: 14
-  scary_item_interval: 0.5
+  scary_item_distance: 10
+  scary_item_interval: 0.75
   scary_item_interval_haning: 1.5
+  sfx_change_stay_point: {fileID: 8300000, guid: 51753fdcac045744f85ca489d01d7c7e,
+    type: 3}
+  heart_beat_distance: 12
+  heart_beat_sfx: {fileID: 8300000, guid: d543ff00f493132408161f7e8f25ea9d, type: 3}
+  heart_beat_rapid_sfx: {fileID: 8300000, guid: 3278beeeb9901a84bb28a11c0c1fbf60,
+    type: 3}
 --- !u!50 &343134521
 Rigidbody2D:
   serializedVersion: 4
@@ -2211,6 +2228,12 @@ BoxCollider2D:
 --- !u!4 &343134524 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8735101636422360500, guid: b417dab0e9c87544b91f7993abf0d110,
+    type: 3}
+  m_PrefabInstance: {fileID: 185154859}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &343134525 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 5391061477284722906, guid: b417dab0e9c87544b91f7993abf0d110,
     type: 3}
   m_PrefabInstance: {fileID: 185154859}
   m_PrefabAsset: {fileID: 0}
@@ -6054,6 +6077,7 @@ MonoBehaviour:
   hold_breath_move_speed_multiplier: 0.33
   breath_max_vital_capacity: 7
   breath_ui_vital_bar: {fileID: 1771980513}
+  sfx_scare: {fileID: 8300000, guid: 1515ead52650dd24f8ca939e5ef36274, type: 3}
 --- !u!114 &1366103241
 MonoBehaviour:
   m_ObjectHideFlags: 0

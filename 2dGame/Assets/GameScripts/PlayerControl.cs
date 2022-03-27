@@ -153,7 +153,7 @@ public class PlayerControl : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T)) BreakFlashlight();
 
         if (Input.GetKeyDown(KeyCode.LeftShift)) HoldBreath();
-        if (Input.GetKeyUp(KeyCode.LeftShift)) StartBreath();
+        if (Input.GetKeyUp(KeyCode.LeftShift)) StartBreath(false);
     }
 
 
@@ -426,7 +426,7 @@ public class PlayerControl : MonoBehaviour
         {
             breath_cur_vital_capacity -= Time.deltaTime;
             if (breath_cur_vital_capacity < 0)
-                StartBreath();
+                StartBreath(false);
         }
         var ratio = breath_cur_vital_capacity / breath_max_vital_capacity;
         breath_ui_vital_bar.SetProgress(ratio);
@@ -438,10 +438,12 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    public void StartBreath()
+    public AudioClip sfx_scare;
+    public void StartBreath(bool is_scary)
     {
         animator.SetBool("hold_breath", false);
         var ratio = breath_cur_vital_capacity / breath_max_vital_capacity;
+        if (is_scary) audio_source.PlayOneShot(sfx_scare);
         if (ratio < 0.5f)
         {
             audio_source.clip = sfx_start_breath;

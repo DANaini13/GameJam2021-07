@@ -16,6 +16,7 @@ public class MonsterAI : MonoBehaviour
     public float cheasing_interval;
     public Transform stay_points_holder;
     public Transform player;
+    public AudioSource audio_source;
     private Animator anim;
     private CapsuleCollider2D collid;
     private Rigidbody2D rigidb;
@@ -41,6 +42,7 @@ public class MonsterAI : MonoBehaviour
         Haning();
         UpdateStayPoints();
         UpdateCollider();
+        UpdateHeartBeat();
         Shake();
     }
 
@@ -172,6 +174,7 @@ public class MonsterAI : MonoBehaviour
         ChangeStayPoints();
     }
 
+    public AudioClip sfx_change_stay_point;
     void ChangeStayPoints()
     {
         start_stay_time = Time.fixedTime;
@@ -187,6 +190,7 @@ public class MonsterAI : MonoBehaviour
             if (Mathf.Abs(position.y - player.position.y) > 5) continue;
 
             found = true;
+            audio_source.PlayOneShot(sfx_change_stay_point);
             transform.position = position;
         }
     }
@@ -209,5 +213,39 @@ public class MonsterAI : MonoBehaviour
         walking_speed_modify -= walking_speed_change * 0.5f;
         if (walking_speed_modify <= -1f)
             walking_speed_modify = -1f;
+    }
+
+
+    public float heart_beat_distance = 8f;
+    public AudioClip heart_beat_sfx, heart_beat_rapid_sfx;
+    private bool is_heart_beat_rapid;
+    void UpdateHeartBeat()
+    {
+        if (Vector3.Distance(player.position, this.transform.position) < heart_beat_distance)
+        {
+            if (is_cheasing)
+            {
+                if (!is_heart_beat_rapid || !audio_source.isPlaying)
+                {
+                    audio_source.clip = heart_beat_rapid_sfx;
+                    audio_source.Play();
+                }
+                is_heart_beat_rapid = true;
+            }
+            else
+            {
+                if (is_heart_beat_rapid || !audio_source.isPlaying)
+                {
+                    audio_source.clip = heart_beat_sfx;
+                    audio_source.Play();
+                }
+                is_heart_beat_rapid = false;
+            }
+        }
+        else
+        {
+            audio_source.clip = null;
+            audio_source.Stop();
+        }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class UISceneFollower : MonoBehaviour
 {
     public int tag;
-    public int auto_destory_after = 0;
+    public float auto_destory_after = 0;
     public Transform fellowing_obj;
     public Vector3 offset = new Vector3(0, 0, 0);
     private RectTransform rect_transform;
