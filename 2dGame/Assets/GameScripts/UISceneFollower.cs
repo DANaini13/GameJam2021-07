@@ -67,9 +67,9 @@ public class UISceneFollower : MonoBehaviour
         started_destory = true;
         var images = GetComponentsInChildren<Image>();
         foreach (var image in images) image.DOFade(0, seconds);
-        GameObject.Destroy(gameObject, seconds);
         var texts = GetComponentsInChildren<Text>();
         foreach (var text in texts) text.DOFade(0, seconds);
+        GameObject.Destroy(gameObject, seconds);
     }
 
 }

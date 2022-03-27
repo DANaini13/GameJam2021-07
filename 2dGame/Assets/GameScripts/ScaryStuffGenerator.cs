@@ -41,7 +41,7 @@ public class ScaryStuffGenerator : MonoBehaviour
             var fellower = Instantiate(tap_btn_prefab, canvas).GetComponent<UISceneFollower>();
             fellower.GetComponent<UIButton>().on_click = OnClickTapBtn;
             fellower.fellowing_obj = transform;
-            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f,0.25f),0f);
+            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f,0.25f),2f);
             current_btn = fellower;
             fellower.auto_destory_after = 3;
             Invoke("OnTapBtnDidnotClick", 4.0f);
@@ -51,7 +51,7 @@ public class ScaryStuffGenerator : MonoBehaviour
             var fellower = Instantiate(stay_btn_prefab, canvas).GetComponent<UISceneFollower>();
             fellower.GetComponent<UIButton>().on_click = OnClickStayBtn;
             fellower.fellowing_obj = transform;
-            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f,0.25f),0f);
+            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f,0.25f),2f);
             fellower.auto_destory_after = 3;
             current_btn = fellower;
         }
@@ -74,14 +74,16 @@ public class ScaryStuffGenerator : MonoBehaviour
     
     void OnClickTapBtn()
     {
+        PlayerControl._instance.ClickBtn(this.transform.position);
         tap_btn_clicked = true;
-        current_btn.FadeOutAfter(0);
+        current_btn.FadeOutAfter(0.01f);
     }
 
     void OnClickStayBtn()
     {
+        PlayerControl._instance.ClickBtn(this.transform.position);
         ResultWrong();
-        current_btn.FadeOutAfter(0);
+        current_btn.FadeOutAfter(0.01f);
     }
 
     public void ResultWrong()

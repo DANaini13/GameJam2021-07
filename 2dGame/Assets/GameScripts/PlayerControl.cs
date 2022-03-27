@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class PlayerControl : MonoBehaviour
 {
+    public static PlayerControl _instance;
     public Animator animator;
     public Vector2 standard_vector;
     public Vector3 player_offset;
@@ -15,6 +17,7 @@ public class PlayerControl : MonoBehaviour
 
     private void Awake()
     {
+        _instance = this;
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, this, OnSanValueChangedEvent);
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.TRANS_PLAYER_TO_POSITION, this, TransToPositionEvent);
         floor_btn = Resources.Load("Prefabs/stair_btn") as GameObject;
@@ -140,6 +143,10 @@ public class PlayerControl : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.D)) holding_D = false;
 
         if (Input.GetKeyDown(KeyCode.E)) Hide();
+
+        if (Input.GetMouseButtonDown(1)) TurnOnFlashLight();
+
+        if (Input.GetKeyDown(KeyCode.T)) BreakFlashlight();
     }
 
 
@@ -307,5 +314,72 @@ public class PlayerControl : MonoBehaviour
             GetComponent<CapsuleCollider2D>().enabled = true;
             GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
         }
+    }
+
+    public UnityEngine.Experimental.Rendering.Universal.Light2D flashlight;
+    public float flashlight_default_intensity = 0.7f;
+    public AudioSource audio_source;
+    public AudioClip[] sfx_flashlight_click;
+    public AudioClip sfx_btn_click;
+    private int flashlight_reboot_count;
+    private bool is_flashlight_control = true;
+    private bool is_flashlight_on = true;
+    public void BreakFlashlight()
+    {
+        audio_source.PlayOneShot(sfx_flashlight_click[1]);
+        is_flashlight_on = false;
+        flashlight.intensity = 0f;
+        //设置重新开启需要按几次键
+        flashlight_reboot_count = UnityEngine.Random.Range(1, 6);
+    }
+
+    void TurnOnFlashLight()
+    {
+        //没有控制权时不允许操作
+        if (!is_flashlight_control) return;
+
+        is_flashlight_on = !is_flashlight_on;
+
+        //开灯
+        if (is_flashlight_on)
+        {
+            audio_source.PlayOneShot(sfx_flashlight_click[0]);
+            flashlight.intensity = flashlight_default_intensity;
+
+            //如果重启次数没耗尽，则让协程关灯
+            if (flashlight_reboot_count > 0)
+            {
+                //关闭控制权
+                is_flashlight_control = false;
+                flashlight_reboot_count--;
+                StartCoroutine("ShutdownFlashLight");
+            }
+        }
+        //关灯
+        else
+        {
+            audio_source.PlayOneShot(sfx_flashlight_click[1]);
+            flashlight.intensity = 0.0f;
+        }
+    }
+
+    IEnumerator ShutdownFlashLight()
+    {
+        //延迟关灯，制造闪烁效果
+        yield return new WaitForSeconds(0.05f);
+        flashlight.intensity = 0f;
+        //关灯后才恢复控制权
+        is_flashlight_control = true;
+    }
+
+    public ParticleSystem ps_click;
+
+    public void ClickBtn(Vector3 pos)
+    {
+        audio_source.PlayOneShot(sfx_btn_click);
+        Transform ps = Instantiate(ps_click).transform;
+        pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        pos.z = 0f;
+        ps.position = pos;
     }
 }

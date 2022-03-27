@@ -35,7 +35,7 @@ public class SanManager : MonoBehaviour
     {
         Update();
     }
-    
+
     void Update()
     {
         SanValueUpdate();
@@ -55,17 +55,17 @@ public class SanManager : MonoBehaviour
         if (last_san_value == san_value) return;
         last_san_value = san_value;
         // 派发事件
-        san = (float)san_value/100.0f;
+        san = (float)san_value / 100.0f;
         san_bar.SetProgress(san);
         var arg = new CRCustomArgs.OnSanValueChangedArg();
         arg.san = san;
         arg.san_value = san_value;
-        CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, arg); 
+        CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_SAN_VALUE_CHANGED, arg);
     }
-    
+
     public void OnModifySanValueEvent(object arg)
     {
-        var typed_arg = (CRCustomArgs.ModifySanValueArg) arg;
+        var typed_arg = (CRCustomArgs.ModifySanValueArg)arg;
         san_value += typed_arg.diff;
         if (san_value <= 0)
         {
@@ -79,14 +79,31 @@ public class SanManager : MonoBehaviour
 
     public void OnAnswerWrongEvent(object arg)
     {
+        //点击错误则破坏电筒
+        PlayerControl._instance.BreakFlashlight();
         volume.enabled = true;
-        light.intensity = 1;
-        Invoke("disable_volume", 0.3f);
+        volume.weight = 1f;
+        // light.intensity = 1;
+        // Invoke("disable_volume", 0.3f);
+        StartCoroutine("DisableVolume");
+    }
+
+    IEnumerator DisableVolume()
+    {
+        while (true)
+        {
+            yield return 0;
+            volume.weight -= 0.01f;
+            if (volume.weight <= 0)
+                break;
+        }
+        volume.weight = 0f;
+        volume.enabled = false;
     }
 
     private void disable_volume()
     {
         volume.enabled = false;
-        light.intensity = 0.01f;
+        // light.intensity = 0.01f;
     }
 }
