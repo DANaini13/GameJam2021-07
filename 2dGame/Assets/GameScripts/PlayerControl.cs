@@ -14,6 +14,7 @@ public class PlayerControl : MonoBehaviour
     public List<int> play_state_dilimiters;
     private GameObject hidding_btn_prefab;
     private bool is_near_hiding_point;
+    public bool is_monster_target;
 
     private void Awake()
     {
@@ -61,6 +62,7 @@ public class PlayerControl : MonoBehaviour
         UpdateHiddingBtnState();
         UpdateMovement();
         UpdateBreath();
+        UpdateMonsterTarget();
     }
 
     [Header("瞄准的目标")]
@@ -334,6 +336,8 @@ public class PlayerControl : MonoBehaviour
     private bool is_flashlight_on = true;
     public void BreakFlashlight()
     {
+        if (!is_flashlight_on) return;
+
         audio_source.PlayOneShot(sfx_flashlight_click[1]);
         is_flashlight_on = false;
         flashlight.intensity = 0f;
@@ -444,6 +448,15 @@ public class PlayerControl : MonoBehaviour
             audio_source.Play();
         }
         is_hold_breath = false;
+    }
+
+    void UpdateMonsterTarget()
+    {
+        //屏住呼吸，且没有开灯，则不会被发现
+        if (is_hold_breath && !is_flashlight_on)
+            is_monster_target = false;
+        else
+            is_monster_target = true;
     }
 
 }
