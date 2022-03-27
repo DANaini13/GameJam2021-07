@@ -228,7 +228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &38385939
 Transform:
   m_ObjectHideFlags: 0
@@ -2127,18 +2127,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stay_interval: 10
-  stay_distance: 20
-  play_limit_distance: 10
-  cheasing_distance: 7
-  walking_speed: 2.5
+  stay_distance: 25
+  play_limit_distance: 15
+  cheasing_distance: 6.5
+  walking_speed: 3
+  walking_speed_change: 0.5
   cheasing_interval: 10
   stay_points_holder: {fileID: 976525829}
   player: {fileID: 1366103236}
   is_cheasing: 0
   cheasing_left: 0
-  haning_speed_multiplier: 0.5
-  haning_Update_timer: 2
+  haning_speed_multiplier: 0.33
+  haning_Update_timer: 5
+  scary_item_prefab: {fileID: 8628783015783451378, guid: d59464413b3dd1f4b85f854fae93ddf9,
+    type: 3}
   walking_speed_factor: 0.35
+  scary_item_distance: 14
+  scary_item_interval: 0.5
+  scary_item_interval_haning: 1.5
 --- !u!50 &343134521
 Rigidbody2D:
   serializedVersion: 4
@@ -2611,7 +2617,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1010934812}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3216,7 +3222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.3773585, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3230,7 +3236,7 @@ MonoBehaviour:
     m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 200
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -3252,7 +3258,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 745292031}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
@@ -4054,6 +4060,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 60
       objectReference: {fileID: 0}
+    - target: {fileID: 4225645953264000111, guid: 95a0c533e10b3495faa41a5dc785d129,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5707329631372489856, guid: 95a0c533e10b3495faa41a5dc785d129,
         type: 3}
       propertyPath: m_FillAmount
@@ -4394,9 +4405,9 @@ RectTransform:
   - {fileID: 965680190}
   - {fileID: 78865780}
   - {fileID: 1199124569}
-  - {fileID: 1836169114}
   - {fileID: 518749443}
   - {fileID: 1771980512}
+  - {fileID: 1836169114}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6041,7 +6052,7 @@ MonoBehaviour:
   sfx_hold_breath: {fileID: 8300000, guid: aa14f5d6a0f83d74e84c51cea96bf021, type: 3}
   sfx_start_breath: {fileID: 8300000, guid: d7bd14724595809468bcc1cd039b81bf, type: 3}
   hold_breath_move_speed_multiplier: 0.33
-  breath_max_vital_capacity: 5
+  breath_max_vital_capacity: 8
   breath_ui_vital_bar: {fileID: 1771980513}
 --- !u!114 &1366103241
 MonoBehaviour:
@@ -6590,6 +6601,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 60
       objectReference: {fileID: 0}
+    - target: {fileID: 4225645953264000111, guid: 95a0c533e10b3495faa41a5dc785d129,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5707329631372489856, guid: 95a0c533e10b3495faa41a5dc785d129,
         type: 3}
       propertyPath: m_FillAmount
@@ -6618,7 +6634,7 @@ PrefabInstance:
     - target: {fileID: 5707329631609055913, guid: 95a0c533e10b3495faa41a5dc785d129,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5707329631609055913, guid: 95a0c533e10b3495faa41a5dc785d129,
         type: 3}
@@ -7399,12 +7415,12 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1836169113}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 100}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 745292032}
   m_Father: {fileID: 1010934812}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -7424,7 +7440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.8490566, g: 0.19624422, b: 0.19624422, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

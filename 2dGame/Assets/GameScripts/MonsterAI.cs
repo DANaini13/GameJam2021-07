@@ -5,20 +5,28 @@ using Random = UnityEngine.Random;
 
 public class MonsterAI : MonoBehaviour
 {
+    public static MonsterAI _instance;
     public float stay_interval = 10;
     public float stay_distance = 20f;
     public float play_limit_distance = 10;
     public float cheasing_distance = 9;
     public float walking_speed = 1;
+    public float walking_speed_change = 0.5f;
+    private float walking_speed_modify;
     public float cheasing_interval;
     public Transform stay_points_holder;
     public Transform player;
     private Animator anim;
+    private CapsuleCollider2D collid;
+    private Rigidbody2D rigidb;
 
     private List<Vector3> stay_points = new List<Vector3>();
 
     private void Awake()
     {
+        _instance = this;
+        collid = this.GetComponent<CapsuleCollider2D>();
+        rigidb = this.GetComponent<Rigidbody2D>();
         anim = this.transform.GetComponentInChildren<Animator>();
         int child_count = stay_points_holder.childCount;
         for (int i = 0; i < child_count; ++i)
@@ -32,6 +40,7 @@ public class MonsterAI : MonoBehaviour
         CheckCheasingPlayer();
         Haning();
         UpdateStayPoints();
+        UpdateCollider();
         Shake();
     }
 
@@ -82,10 +91,29 @@ public class MonsterAI : MonoBehaviour
         anim.SetBool("walking", true);
         Invoke("StopCheasing", cheasing_interval);
     }
+    public ScaryStuffGenerator_Monster scary_item_prefab;
     public float walking_speed_factor = 0.35f;
-    void Cheasing()
+    public float scary_item_distance = 10f;
+    public float scary_item_interval = 0.5f;
+    public float scary_item_interval_haning = 1.5f;
+    private float scary_item_timer;
+    async void Cheasing()
     {
-        var real_speed = walking_speed * (is_cheasing ? 1.0f : haning_speed_multiplier);
+        //距离玩家够近时，不间断出现需要玩家点击的字
+        if (Vector3.Distance(this.transform.position, player.position) < scary_item_distance)
+        {
+            scary_item_timer += Time.deltaTime;
+            var interval = is_cheasing ? scary_item_interval : scary_item_interval_haning;
+            if (scary_item_timer >= interval)
+            {
+                scary_item_timer = 0f;
+                var scary_item = Instantiate(scary_item_prefab);
+                scary_item.transform.position = this.transform.position + Vector3.up * Random.Range(2f, 5f) + Vector3.left * Random.Range(-2f, 2f) + Vector3.forward * 3f;
+                scary_item.CheckGenerate();
+            }
+        }
+
+        var real_speed = (walking_speed + walking_speed_modify) * (is_cheasing ? 1.0f : haning_speed_multiplier);
         if (cheasing_left)
         {
             anim.SetFloat("walking_speed", real_speed * walking_speed_factor);
@@ -103,8 +131,28 @@ public class MonsterAI : MonoBehaviour
     void StopCheasing()
     {
         is_cheasing = false;
+        walking_speed_modify = 0f;
         anim.SetBool("walking", false);
         ChangeStayPoints();
+    }
+
+    void UpdateCollider()
+    {
+        if (is_cheasing)
+        {
+            collid.enabled = true;
+            rigidb.simulated = true;
+        }
+        else if (Vector3.Distance(player.position, this.transform.position) < cheasing_distance)
+        {
+            collid.enabled = false;
+            rigidb.simulated = false;
+        }
+        else
+        {
+            collid.enabled = true;
+            rigidb.simulated = true;
+        }
     }
 
     private float start_stay_time = 0;
@@ -145,5 +193,17 @@ public class MonsterAI : MonoBehaviour
             this.transform.rotation = Quaternion.Euler(Random.Range(-15f, 15f), Random.Range(-15f, 15f), 0f);
         else
             this.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+    }
+
+    public void Fast()
+    {
+        walking_speed_modify += walking_speed_change;
+    }
+
+    public void Slow()
+    {
+        walking_speed_modify -= walking_speed_change * 0.5f;
+        if (walking_speed_modify <= -1f)
+            walking_speed_modify = -1f;
     }
 }

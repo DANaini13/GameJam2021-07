@@ -258,7 +258,7 @@ public class PlayerControl : MonoBehaviour
         if (other.gameObject.CompareTag("monster"))
         {
             if (hiding) return;
-            if (is_hold_breath) return;
+            if (!is_monster_target) return;
             CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_GAME_OVER, null);
         }
 

@@ -100,7 +100,7 @@ public class SanManager : MonoBehaviour
         while (true)
         {
             yield return 0;
-            volume.weight -= 0.01f;
+            volume.weight -= 0.1f;
             if (volume.weight <= 0)
                 break;
         }
