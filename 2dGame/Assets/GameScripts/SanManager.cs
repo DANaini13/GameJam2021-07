@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class SanManager : MonoBehaviour
 {
+    public static SanManager _instance;
     public ProgressBar san_bar;
     [Range(0, 100)]
     public int san_value = 100;
@@ -22,6 +23,7 @@ public class SanManager : MonoBehaviour
 
     private void Awake()
     {
+        _instance = this;
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.MODIFY_SAN_VALUE, this, OnModifySanValueEvent);
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.ON_ANSWER_WRONG, this, OnAnswerWrongEvent);
     }

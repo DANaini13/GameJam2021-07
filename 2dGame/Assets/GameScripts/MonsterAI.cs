@@ -50,19 +50,23 @@ public class MonsterAI : MonoBehaviour
     public float haning_speed_multiplier = 0.5f;
     public float haning_Update_timer = 2f;
     private float haning_timer;
+    private bool is_haning;
     void Haning()
     {
         if (is_cheasing) return;
         haning_timer += Time.deltaTime;
-        if (haning_timer < haning_Update_timer)
+        if (is_haning && haning_timer < haning_Update_timer)
         {
             Cheasing();
             return;
         }
 
         haning_timer = 0f;
+        //一定几率开始闲逛
+        is_haning = Random.Range(0, 2) == 0 ? true : false;
+        //随机方向
         cheasing_left = Random.Range(0, 2) == 0 ? true : false;
-        anim.SetBool("walking", true);
+        anim.SetBool("walking", is_haning);
     }
 
     void CheckCheasingPlayer()

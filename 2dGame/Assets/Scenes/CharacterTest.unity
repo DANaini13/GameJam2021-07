@@ -2130,7 +2130,7 @@ MonoBehaviour:
   stay_distance: 25
   play_limit_distance: 15
   cheasing_distance: 6.5
-  walking_speed: 3
+  walking_speed: 3.5
   walking_speed_change: 0.4
   cheasing_interval: 10
   stay_points_holder: {fileID: 976525829}
@@ -6068,7 +6068,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   san_bar: {fileID: 670775892}
   san_value: 100
-  san_value_mines_interval: 5
+  san_value_mines_interval: 2
   san_value_mines_amount: 1
   volume: {fileID: 1898564558}
   light: {fileID: 1505497385}

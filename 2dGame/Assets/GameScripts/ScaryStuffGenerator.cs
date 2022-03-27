@@ -77,6 +77,10 @@ public class ScaryStuffGenerator : MonoBehaviour
     {
         PlayerControl._instance.ClickBtn(this.transform.position);
         tap_btn_clicked = true;
+        //正确点击恢复一定比例的san值
+        SanManager._instance.san_value -= Mathf.RoundToInt(san_value_changed_when_wrong * 0.25f);
+        if (SanManager._instance.san_value >= 100)
+            SanManager._instance.san_value = 100;
         if (current_btn)
             current_btn.FadeOutAfter(0.01f);
     }
