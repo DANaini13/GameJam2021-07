@@ -438,7 +438,7 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    void StartBreath()
+    public void StartBreath()
     {
         animator.SetBool("hold_breath", false);
         var ratio = breath_cur_vital_capacity / breath_max_vital_capacity;

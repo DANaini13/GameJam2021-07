@@ -41,17 +41,18 @@ public class ScaryStuffGenerator : MonoBehaviour
             var fellower = Instantiate(tap_btn_prefab, canvas).GetComponent<UISceneFollower>();
             fellower.GetComponent<UIButton>().on_click = OnClickTapBtn;
             fellower.fellowing_obj = transform;
-            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f,0.25f),2f);
+            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f, 0.25f), 3f);
             current_btn = fellower;
             fellower.auto_destory_after = 3;
             Invoke("OnTapBtnDidnotClick", 4.0f);
-        }else if (generating_index < stay_btn_index)
+        }
+        else if (generating_index < stay_btn_index)
         {
             Debug.Log("stay");
             var fellower = Instantiate(stay_btn_prefab, canvas).GetComponent<UISceneFollower>();
             fellower.GetComponent<UIButton>().on_click = OnClickStayBtn;
             fellower.fellowing_obj = transform;
-            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f,0.25f),2f);
+            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f, 0.25f), 2f);
             fellower.auto_destory_after = 3;
             current_btn = fellower;
         }
@@ -71,19 +72,21 @@ public class ScaryStuffGenerator : MonoBehaviour
     }
 
     private bool tap_btn_clicked = false;
-    
+
     void OnClickTapBtn()
     {
         PlayerControl._instance.ClickBtn(this.transform.position);
         tap_btn_clicked = true;
-        current_btn.FadeOutAfter(0.01f);
+        if (current_btn)
+            current_btn.FadeOutAfter(0.01f);
     }
 
     void OnClickStayBtn()
     {
         PlayerControl._instance.ClickBtn(this.transform.position);
         ResultWrong();
-        current_btn.FadeOutAfter(0.01f);
+        if (current_btn)
+            current_btn.FadeOutAfter(0.01f);
     }
 
     public void ResultWrong()
@@ -93,6 +96,8 @@ public class ScaryStuffGenerator : MonoBehaviour
         Debug.Log(arg.diff);
         CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.MODIFY_SAN_VALUE, arg);
         CREventSystem.Instance.DispatchCREventByKey(CRCustomEvents.ON_ANSWER_WRONG, null);
+        //玩家点击失败，会强制开始呼吸
+        PlayerControl._instance.StartBreath();
     }
 
 }
