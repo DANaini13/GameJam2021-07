@@ -45,6 +45,8 @@ public class ScaryStuffGenerator_Monster : MonoBehaviour
             current_btn = fellower;
             fellower.auto_destory_after = 1f;
             Invoke("OnTapBtnDidnotClick", 2f);
+            //黄字生成时，加速
+            MonsterAI._instance.Fast();
         }
         else if (generating_index < stay_btn_index)
         {
@@ -68,6 +70,8 @@ public class ScaryStuffGenerator_Monster : MonoBehaviour
             tap_btn_clicked = false;
             return;
         }
+        //到期时，回退加速效果
+        MonsterAI._instance.Slow();
         ResultWrong();
     }
 
@@ -77,6 +81,7 @@ public class ScaryStuffGenerator_Monster : MonoBehaviour
     {
         PlayerControl._instance.ClickBtn(this.transform.position);
         tap_btn_clicked = true;
+        //正确点击，回退加速效果
         MonsterAI._instance.Slow();
         if (current_btn)
             current_btn.FadeOutAfter(0.01f);
@@ -92,7 +97,6 @@ public class ScaryStuffGenerator_Monster : MonoBehaviour
 
     public void ResultWrong()
     {
-        MonsterAI._instance.Fast();
         //玩家点击失败，会强制开始呼吸
         PlayerControl._instance.StartBreath(true);
     }

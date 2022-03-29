@@ -12,7 +12,7 @@ public class MonsterAI : MonoBehaviour
     public float cheasing_distance = 9;
     public float walking_speed = 1;
     public float walking_speed_change = 0.5f;
-    private float walking_speed_modify;
+    public float walking_speed_modify;
     public float cheasing_interval;
     public Transform stay_points_holder;
     public Transform player;

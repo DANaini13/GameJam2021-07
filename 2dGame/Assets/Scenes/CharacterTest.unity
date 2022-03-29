@@ -2140,8 +2140,9 @@ MonoBehaviour:
   stay_distance: 25
   play_limit_distance: 15
   cheasing_distance: 6
-  walking_speed: 3.5
+  walking_speed: 2.5
   walking_speed_change: 0.4
+  walking_speed_modify: 0
   cheasing_interval: 10
   stay_points_holder: {fileID: 976525829}
   player: {fileID: 1366103236}
@@ -6075,7 +6076,7 @@ MonoBehaviour:
   sfx_hold_breath: {fileID: 8300000, guid: aa14f5d6a0f83d74e84c51cea96bf021, type: 3}
   sfx_start_breath: {fileID: 8300000, guid: d7bd14724595809468bcc1cd039b81bf, type: 3}
   hold_breath_move_speed_multiplier: 0.33
-  breath_max_vital_capacity: 7
+  breath_max_vital_capacity: 8
   breath_ui_vital_bar: {fileID: 1771980513}
   sfx_scare: {fileID: 8300000, guid: 1515ead52650dd24f8ca939e5ef36274, type: 3}
 --- !u!114 &1366103241
