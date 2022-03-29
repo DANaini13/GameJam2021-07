@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   btn_needs_to_tap: lamp_tap
   btn_cannot_tap: lamp_normal
-  tap_btn_ratio: 0.8
-  stay_btn_ratio: 0.15
-  empty_ratio: 0.05
+  tap_btn_ratio: 0.7
+  stay_btn_ratio: 0.3
+  empty_ratio: 0
   san_value_changed_when_wrong: 0
