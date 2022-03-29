@@ -50,25 +50,15 @@ public class MonsterAI : MonoBehaviour
     public bool cheasing_left = false;
 
     public float haning_speed_multiplier = 0.5f;
-    public float haning_Update_timer = 2f;
-    private float haning_timer;
     private bool is_haning;
     void Haning()
     {
         if (is_cheasing) return;
-        haning_timer += Time.deltaTime;
-        if (is_haning && haning_timer < haning_Update_timer)
+        if (is_haning)
         {
             Cheasing();
             return;
         }
-
-        haning_timer = 0f;
-        //一定几率开始闲逛
-        is_haning = Random.Range(0, 2) == 0 ? true : false;
-        //随机方向
-        cheasing_left = Random.Range(0, 2) == 0 ? true : false;
-        anim.SetBool("walking", is_haning);
     }
 
     void CheckCheasingPlayer()
@@ -114,7 +104,7 @@ public class MonsterAI : MonoBehaviour
             {
                 scary_item_timer = 0f;
                 var scary_item = Instantiate(scary_item_prefab);
-                scary_item.transform.position = this.transform.position + Vector3.up * Random.Range(2f, 5f) + Vector3.left * Random.Range(-2f, 2f) + Vector3.forward * 3f;
+                scary_item.transform.position = this.transform.position;
                 scary_item.CheckGenerate();
             }
         }
@@ -193,6 +183,16 @@ public class MonsterAI : MonoBehaviour
             audio_source.PlayOneShot(sfx_change_stay_point);
             transform.position = position;
         }
+
+        //一定几率开始闲逛
+        is_haning = Random.Range(0, 3) == 0 ? false : true;
+        //向玩家方向闲逛
+        if (is_haning)
+        {
+            cheasing_left = true;
+            if (player.position.x >= transform.position.x) cheasing_left = false;
+        }
+        anim.SetBool("walking", is_haning);
     }
 
     void Shake()
@@ -210,9 +210,9 @@ public class MonsterAI : MonoBehaviour
 
     public void Slow()
     {
-        walking_speed_modify -= walking_speed_change * 0.5f;
-        if (walking_speed_modify <= -1f)
-            walking_speed_modify = -1f;
+        walking_speed_modify -= walking_speed_change;
+        if (walking_speed_modify <= 0f)
+            walking_speed_modify = 0f;
     }
 
 

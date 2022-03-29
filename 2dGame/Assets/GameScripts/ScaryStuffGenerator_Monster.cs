@@ -40,8 +40,8 @@ public class ScaryStuffGenerator_Monster : MonoBehaviour
             Debug.Log("tap");
             var fellower = Instantiate(tap_btn_prefab, canvas).GetComponent<UISceneFollower>();
             fellower.GetComponent<UIButton>().on_click = OnClickTapBtn;
-            fellower.fellowing_obj = transform;
-            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f, 0.25f), 3f);
+            fellower.fellowing_obj = transform;//MonsterAI._instance.transform;
+            fellower.offset = new Vector3(Random.Range(-1f, 1f), Random.Range(1f, 4f), 3f);
             current_btn = fellower;
             fellower.auto_destory_after = 1f;
             Invoke("OnTapBtnDidnotClick", 2f);
@@ -53,8 +53,8 @@ public class ScaryStuffGenerator_Monster : MonoBehaviour
             Debug.Log("stay");
             var fellower = Instantiate(stay_btn_prefab, canvas).GetComponent<UISceneFollower>();
             fellower.GetComponent<UIButton>().on_click = OnClickStayBtn;
-            fellower.fellowing_obj = transform;
-            fellower.offset = new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f, 0.25f), 2f);
+            fellower.fellowing_obj = transform;//MonsterAI._instance.transform;
+            fellower.offset = new Vector3(Random.Range(-1f, 1f), Random.Range(1f, 4f), 2f);
             fellower.auto_destory_after = 1f;
             current_btn = fellower;
         }

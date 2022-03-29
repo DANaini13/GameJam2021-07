@@ -2141,7 +2141,7 @@ MonoBehaviour:
   play_limit_distance: 15
   cheasing_distance: 6
   walking_speed: 2.5
-  walking_speed_change: 0.4
+  walking_speed_change: 0.3
   walking_speed_modify: 0
   cheasing_interval: 10
   stay_points_holder: {fileID: 976525829}
@@ -2150,13 +2150,12 @@ MonoBehaviour:
   is_cheasing: 0
   cheasing_left: 0
   haning_speed_multiplier: 0.33
-  haning_Update_timer: 5
   scary_item_prefab: {fileID: 8628783015783451378, guid: d59464413b3dd1f4b85f854fae93ddf9,
     type: 3}
   walking_speed_factor: 0.35
   scary_item_distance: 10
-  scary_item_interval: 0.75
-  scary_item_interval_haning: 1.5
+  scary_item_interval: 0.6
+  scary_item_interval_haning: 1.2
   sfx_change_stay_point: {fileID: 8300000, guid: 51753fdcac045744f85ca489d01d7c7e,
     type: 3}
   heart_beat_distance: 12
@@ -6076,7 +6075,7 @@ MonoBehaviour:
   sfx_hold_breath: {fileID: 8300000, guid: aa14f5d6a0f83d74e84c51cea96bf021, type: 3}
   sfx_start_breath: {fileID: 8300000, guid: d7bd14724595809468bcc1cd039b81bf, type: 3}
   hold_breath_move_speed_multiplier: 0.33
-  breath_max_vital_capacity: 8
+  breath_max_vital_capacity: 12
   breath_ui_vital_bar: {fileID: 1771980513}
   sfx_scare: {fileID: 8300000, guid: 1515ead52650dd24f8ca939e5ef36274, type: 3}
 --- !u!114 &1366103241
