@@ -443,7 +443,8 @@ public class PlayerControl : MonoBehaviour
     {
         animator.SetBool("hold_breath", false);
         var ratio = breath_cur_vital_capacity / breath_max_vital_capacity;
-        if (is_scary) audio_source.PlayOneShot(sfx_scare);
+        if (is_hold_breath)
+            if (is_scary) audio_source.PlayOneShot(sfx_scare);
         if (ratio < 0.5f)
         {
             audio_source.clip = sfx_start_breath;

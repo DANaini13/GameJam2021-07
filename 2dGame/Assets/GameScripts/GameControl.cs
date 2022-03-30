@@ -12,12 +12,18 @@ public class GameControl : MonoBehaviour
     public Transform player;
     public Transform monster;
     public GameObject hand;
-    
+
     private void Awake()
     {
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.ON_GAME_OVER, this, OnGameOverEvent);
         CREventSystem.Instance.ListenCustomeEventByKey(CRCustomEvents.ON_GAME_WIN, this, OnGameWin);
     }
+
+    // void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.M))
+    //         OnGameOverEvent(this);
+    // }
 
     private void OnDestroy()
     {
@@ -27,7 +33,9 @@ public class GameControl : MonoBehaviour
 
     public void OnGameOverEvent(object arg)
     {
+        hand.transform.localScale = Vector3.zero;
         hand.SetActive(true);
+        hand.transform.DOScale(Vector3.one * 5, 0.3f).SetEase(Ease.InQuint);
         Invoke("Over", 0.3f);
     }
 
@@ -38,7 +46,7 @@ public class GameControl : MonoBehaviour
 
     public void OnGameWin(object arg)
     {
-        
+
         player.transform.position = new Vector3(0, -2.81f, 0);
         player.GetComponent<SanManager>().san_value = 100;
         monster.transform.position = new Vector3(127.7f, 19.4f, 0);
