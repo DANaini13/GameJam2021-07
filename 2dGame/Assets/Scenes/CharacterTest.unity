@@ -2549,7 +2549,7 @@ MonoBehaviour:
   room_count: 7
   stairs_index: 000000000300000006000000
   level_height: 15
-  room_length: 30
+  room_length: 20
   room_half_height: 4.5
   room_normal_prefabs:
   - {fileID: 4646080003585674617, guid: ded992b930c8e4795bb9ffc4839419d0, type: 3}
