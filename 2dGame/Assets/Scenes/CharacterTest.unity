@@ -2550,6 +2550,8 @@ MonoBehaviour:
   stairs_index: 000000000300000006000000
   room_length: 30
   room_half_height: 4.5
+  expand_steps: 5
+  seed_input: 
   room_empty: {fileID: 4646080003585674617, guid: ded992b930c8e4795bb9ffc4839419d0,
     type: 3}
   room_normal_prefabs:
@@ -2568,7 +2570,11 @@ MonoBehaviour:
     type: 3}
   stairs_down_prefab: {fileID: 5451428896552700328, guid: 31dec9015bf64f843a7fe81f65727e27,
     type: 3}
+  stairs_down_block_prefab: {fileID: 5451428896552700328, guid: be8e08b7376679c47b3499a4a79a61de,
+    type: 3}
   stairs_up_prefab: {fileID: 5451428896552700328, guid: 4a18807c0baf32f49a7571b8aa55e3ac,
+    type: 3}
+  stairs_up_block_prefab: {fileID: 5451428896552700328, guid: f46f26dfffad31c44a74c065fe4c4c01,
     type: 3}
   level_num_prefab: {fileID: 4276919845478369797, guid: 45dd77dd3c571844b83aaad27e821a38,
     type: 3}
@@ -2576,7 +2582,7 @@ MonoBehaviour:
     type: 3}
   ground_prefab: {fileID: 271809712}
   wall_prefab: {fileID: 1184938225}
-  path_steps: 24
+  path_steps: 16
 --- !u!4 &452155882 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4646080003585674617, guid: a48b0a7a967e21149b7c767c569e598b,

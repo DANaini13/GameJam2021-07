@@ -9,6 +9,7 @@ TagManager:
   - scary_item
   - end_gate
   - monster
+  - start
   layers:
   - Default
   - TransparentFX

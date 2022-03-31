@@ -16,6 +16,10 @@ public class RoomGenerator : MonoBehaviour
     public float room_length = 30.0f;
     [Header("房间半高，用来放地板")]
     public float room_half_height = 4.5f;
+    [Header("岔路最多扩展几步")]
+    public int expand_steps = 3;
+    public string seed_input;
+    private int seed;
 
     public Transform room_empty;
     public Transform[] room_normal_prefabs;
@@ -24,7 +28,9 @@ public class RoomGenerator : MonoBehaviour
     public Transform room_lantern;
     public Transform room_ghost;
     public Transform stairs_down_prefab;
+    public Transform stairs_down_block_prefab;
     public Transform stairs_up_prefab;
+    public Transform stairs_up_block_prefab;
     public Transform level_num_prefab;
     public Transform obstacle_prefab;
     public Transform ground_prefab;
@@ -33,12 +39,19 @@ public class RoomGenerator : MonoBehaviour
     private int[,] room_data;
     private Vector2Int start_room;
 
-    void Awake()
+    async void Awake()
     {
+        if (seed_input.Equals(string.Empty)) seed_input = System.DateTime.Now.ToString();
+        seed = seed_input.GetHashCode();
+        Random.InitState(seed);
+
         GeneratePath(0);
         GenerateSpecialRooms();
-        GenerateRooms();
-        GenerateStairs();
+        List<Vector2Int> list = GenerateRandomRoom(path_list);
+        for (int i = 0; i < expand_steps - 1; i++)
+            list = GenerateRandomRoom(list);
+        InstantiateRooms();
+        InstantiateStairs();
     }
 
     void Start()
@@ -268,15 +281,90 @@ public class RoomGenerator : MonoBehaviour
             int r = Random.Range(0, path_list.Count);
             int x = path_list[r].x;
             int y = path_list[r].y;
-            if (room_data[x,y] == 1)
+            if (room_data[x, y] == 1)
             {
-                room_data[x,y] = type;
+                room_data[x, y] = type;
                 break;
             }
         }
     }
 
-    void GenerateRooms()
+    List<Vector2Int> GenerateRandomRoom(List<Vector2Int> list)
+    {
+        var rand = 2;
+        List<Vector2Int> rooms = new List<Vector2Int>();
+        if (list.Count == 0) return rooms;
+        //遍历所有房间，一定几率朝左右上下扩展
+        foreach (var v2 in list)
+        {
+            if (Random.Range(0, rand) != 0) continue;
+
+            //左
+            if (Is_Room_Exist(v2.x - 1, v2.y) && !Is_Room_Occupied(v2.x - 1, v2.y))
+            {
+                room_data[v2.x - 1, v2.y] = 1;
+                rooms.Add(new Vector2Int(v2.x - 1, v2.y));
+                continue;
+            }
+            //右
+            if (Is_Room_Exist(v2.x + 1, v2.y) && !Is_Room_Occupied(v2.x + 1, v2.y))
+            {
+                room_data[v2.x + 1, v2.y] = 1;
+                rooms.Add(new Vector2Int(v2.x + 1, v2.y));
+                continue;
+            }
+            //楼梯间
+            if (room_data[v2.x, v2.y] == -1 || room_data[v2.x, v2.y] >= 10)
+            {
+                //上面的房间存在
+                if (Is_Room_Exist(v2.x, v2.y + 1))
+                {
+                    //当前房间本来是不可以往上的
+                    if (room_data[v2.x, v2.y] != 10 && room_data[v2.x, v2.y] != 110)
+                    {
+                        if (room_data[v2.x, v2.y] == -1 || room_data[v2.x, v2.y] == 111)
+                            room_data[v2.x, v2.y] = 10;
+                        else
+                            room_data[v2.x, v2.y] += 10;
+
+                        if (room_data[v2.x, v2.y + 1] == -1 || room_data[v2.x, v2.y + 1] == 111)
+                            room_data[v2.x, v2.y + 1] = 100;
+                        else
+                            room_data[v2.x, v2.y + 1] += 100;
+
+                        rooms.Add(new Vector2Int(v2.x, v2.y + 1));
+                        continue;
+                    }
+
+                }
+                //下
+                //下面的房间存在
+                if (Is_Room_Exist(v2.x, v2.y - 1))
+                {
+                    //当前房间本来是不可以往下的
+                    if (room_data[v2.x, v2.y] != 100 && room_data[v2.x, v2.y] != 110)
+                    {
+                        if (room_data[v2.x, v2.y] == -1 || room_data[v2.x, v2.y] == 111)
+                            room_data[v2.x, v2.y] = 100;
+                        else
+                            room_data[v2.x, v2.y] += 100;
+
+                        if (room_data[v2.x, v2.y - 1] == -1 || room_data[v2.x, v2.y - 1] == 111)
+                            room_data[v2.x, v2.y - 1] = 10;
+                        else
+                            room_data[v2.x, v2.y - 1] += 10;
+
+                        rooms.Add(new Vector2Int(v2.x, v2.y - 1));
+                        continue;
+                    }
+
+                }
+            }
+        }
+        return rooms;
+    }
+
+    void InstantiateRooms()
     {
         for (int y = 0; y < level_count; y++)
         {
@@ -328,7 +416,7 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    void GenerateStairs()
+    void InstantiateStairs()
     {
         float offset = 2.2f;
         for (int y = 0; y < level_count; y++)
@@ -342,23 +430,25 @@ public class RoomGenerator : MonoBehaviour
                 //可以往下爬
                 if (y > 0)
                 {
+                    var p = stairs_down_block_prefab;
                     if (room_type == 100 || room_type == 110)
-                    {
-                        prefab = Instantiate(stairs_down_prefab, this.transform).transform;
-                        prefab.position = new Vector3(room_length * x + room_length * 0.5f + offset, level_height * y + room_half_height, 0f);
+                        p = stairs_down_prefab;
+                    prefab = Instantiate(p, this.transform).transform;
+                    prefab.position = new Vector3(room_length * x + room_length * 0.5f + offset, level_height * y + room_half_height, 0f);
+                    if (room_type == 100 || room_type == 110)
                         prefab.Find("TransGate").gameObject.AddComponent<Stairs>().is_up = false;
-                    }
                 }
 
                 //往上
                 if (y < level_count - 1)
                 {
+                    var p = stairs_up_block_prefab;
                     if (room_type == 10 || room_type == 110)
-                    {
-                        prefab = Instantiate(stairs_up_prefab, this.transform).transform;
-                        prefab.position = new Vector3(room_length * x + room_length * 0.5f - offset, level_height * y + room_half_height, 0f);
+                        p = stairs_up_prefab;
+                    prefab = Instantiate(p, this.transform).transform;
+                    prefab.position = new Vector3(room_length * x + room_length * 0.5f - offset, level_height * y + room_half_height, 0f);
+                    if (room_type == 10 || room_type == 110)
                         prefab.Find("TransGate").gameObject.AddComponent<Stairs>().is_up = true;
-                    }
                 }
 
                 //楼层号

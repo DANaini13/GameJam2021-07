@@ -15,6 +15,8 @@ public class PlayerControl : MonoBehaviour
     private GameObject hidding_btn_prefab;
     private bool is_near_hiding_point;
     public bool is_monster_target;
+    public bool is_game_start = false;
+    public Transform ui_bar;
 
     private void Awake()
     {
@@ -53,6 +55,7 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         SetWalking(false);
+        ui_bar.localPosition = new Vector3(0f, -80f, 0f);
     }
 
     void Update()
@@ -243,8 +246,11 @@ public class PlayerControl : MonoBehaviour
             current_trans_gate = hitted_trans_gate;
             // 生成button
             var fellower = Instantiate(floor_btn, canvas.transform).GetComponent<UISceneFollower>();
-            fellower.fellowing_obj = current_trans_gate.transform;
-            current_btn = fellower;
+            if (fellower)
+            {
+                fellower.fellowing_obj = current_trans_gate.transform;
+                current_btn = fellower;
+            }
             // var button = fellower.GetComponent<UIButton>();
             // button.on_click = OnTransBtnClick;
         }
@@ -252,6 +258,7 @@ public class PlayerControl : MonoBehaviour
         //黄字
         if (other.gameObject.CompareTag("scary_item"))
         {
+            if (!is_game_start) return;
             var hitted_item = other.gameObject.GetComponent<ScaryStuffGenerator>();
             hitted_item.CheckGenerate();
         }
@@ -274,6 +281,16 @@ public class PlayerControl : MonoBehaviour
                 hidding_btn.fellowing_obj = other.gameObject.transform;
                 // hidding_btn.GetComponent<UIButton>().on_click = Hide;
                 hidding_btn_text = hidding_btn.transform.GetChild(0).GetComponent<Text>();
+            }
+        }
+
+        //游戏开始
+        if (other.gameObject.CompareTag("start"))
+        {
+            if (!is_game_start)
+            {
+                is_game_start = true;
+                ui_bar.DOLocalMoveY(0.0f, 1f);
             }
         }
     }

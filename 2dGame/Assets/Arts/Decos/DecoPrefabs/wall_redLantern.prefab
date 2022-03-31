@@ -89,7 +89,7 @@ MonoBehaviour:
   m_ShadowVolumeIntensity: 0
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 1.8
+  m_PointLightInnerRadius: 0
   m_PointLightOuterRadius: 2
   m_PointLightDistance: 3
   m_PointLightQuality: 1
@@ -352,6 +352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerEnterChance: 20
   triggerExitChance: 0
+  isOnce: 0
 --- !u!95 &6582516973255477168
 Animator:
   serializedVersion: 3

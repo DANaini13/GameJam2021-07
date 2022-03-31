@@ -48,6 +48,7 @@ public class SanManager : MonoBehaviour
     private float last_update_san_time = 0;
     private void SanValueUpdate()
     {
+        if (!PlayerControl._instance.is_game_start) return;
         if (Time.fixedTime - last_update_san_time < san_value_mines_interval) return;
         san_value -= san_value_mines_amount;
         last_update_san_time = Time.fixedTime;
