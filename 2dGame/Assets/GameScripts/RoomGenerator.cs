@@ -11,7 +11,7 @@ public class RoomGenerator : MonoBehaviour
     [Header("每层的第几个房间是楼梯")]
     public int[] stairs_index = new int[3] { 1, 4, 7 };
     [Header("每层楼的高度")]
-    public float level_height = 15.0f;
+    public static float level_height = 15.0f;
     [Header("房间长度")]
     public float room_length = 30.0f;
     [Header("房间半高，用来放地板")]
@@ -21,6 +21,7 @@ public class RoomGenerator : MonoBehaviour
     public Transform stairs_down_prefab;
     public Transform stairs_up_prefab;
     public Transform level_num_prefab;
+    public Transform obstacle_prefab;
     public Transform ground_prefab;
     public Transform wall_prefab;
 
@@ -36,14 +37,14 @@ public class RoomGenerator : MonoBehaviour
 
     void Start()
     {
-        PlayerControl._instance.transform.position = new Vector3(start_room.x * room_length, start_room.y * level_height, 0f);
+        PlayerControl._instance.transform.position = new Vector3(start_room.x * room_length + room_length * 0.5f, start_room.y * level_height, 0f);
     }
 
     [Header("主路径长度")]
     public int path_steps = 12;
     void GeneratePath(int try_times)
     {
-        if (try_times >= 1000)
+        if (try_times >= 2000)
         {
             Debug.Log("找不到，不找了");
             return;
@@ -77,23 +78,33 @@ public class RoomGenerator : MonoBehaviour
         int dir = 0;
         int offsetY = 0;
         bool is_climb = false;
-        while (steps >= 0)
+        while (steps > 0)
         {
             //如果刚才爬了楼，一定几率继续爬
             if (is_climb && Random.Range(0, 3) == 0)
             {
-                //不是死路，也不是重复房间，继续爬
+                //下一层存在，也没走重复路
                 if (Is_Room_Exist(nextX, nextY + offsetY) && room_data[nextX, nextY + offsetY] == -1)
                 {
-                    //根据爬楼梯的方向，定义楼梯间的标记
-                    Climb(nextX, nextY, offsetY);
-                    //爬完换层，重新定一个前进方向
-                    nextY += offsetY;
-                    dir = 0;
-                    //走了一步
-                    steps--;
-                    //下一轮寻路
-                    continue;
+                    //下一层楼梯间不能与主路径接壤
+                    if (!Is_Room_Exist(nextX - 1, nextY + offsetY) || !Is_Room_Occupied(nextX - 1, nextY + offsetY))
+                    {
+                        if (!Is_Room_Exist(nextX + 1, nextY + offsetY) || !Is_Room_Occupied(nextX + 1, nextY + offsetY))
+                        {
+                            //根据爬楼梯的方向，定义楼梯间的标记
+                            Climb(nextX, nextY, offsetY);
+                            //爬完换层，重新定一个前进方向
+                            nextY += offsetY;
+                            dir = 0;
+                            //走了一步
+                            steps--;
+                            //终点不能是楼梯间
+                            if (steps <= 0)
+                                steps = 1;
+                            //下一轮寻路
+                            continue;
+                        }
+                    }
                 }
             }
             //关闭爬楼梯标记
@@ -103,13 +114,16 @@ public class RoomGenerator : MonoBehaviour
             //到达新楼层时，决定一个前进方向
             if (dir == 0) dir = Random.Range(0, 2) == 0 ? 1 : -1;
 
-            //前进
+            //=====前进
             nextX += dir;
-            //走到死路了，退出
+            //走到死路，退出
             if (!Is_Room_Exist(nextX, nextY))
                 break;
-            //走到重复路了，退出
-            if (room_data[nextX, nextY] > 0)
+            //重复路，退出
+            if (Is_Room_Occupied(nextX, nextY))
+                break;
+            //下一步会与主路径接壤，重试
+            if (Is_Room_Exist(nextX + dir, nextY) && Is_Room_Occupied(nextX + dir, nextY))
                 break;
 
             steps--;
@@ -137,12 +151,32 @@ public class RoomGenerator : MonoBehaviour
                 }
                 //根据剩余楼梯数决定进楼梯的几率
                 is_climb = false;
-                if (Random.Range(0, count) == 0)
+                //对几率进行补正，不然容易到尽头才换层
+                if (Random.Range(0, count + 1) <= 1)
                 {
                     //看看能不能爬
                     List<int> list = new List<int>();
-                    if (Is_Room_Exist(nextX, nextY + 1) && room_data[nextX, nextY + 1] == -1) list.Add(1);
-                    if (Is_Room_Exist(nextX, nextY - 1) && room_data[nextX, nextY - 1] == -1) list.Add(-1);
+                    if (Is_Room_Exist(nextX, nextY + 1) && room_data[nextX, nextY + 1] == -1)
+                    {
+                        //下一层楼梯间不能跟主路径接壤
+                        if (Is_Room_Exist(nextX - 1, nextY + 1) && Is_Room_Occupied(nextX - 1, nextY + 1))
+                            break;
+                        if (Is_Room_Exist(nextX + 1, nextY + 1) && Is_Room_Occupied(nextX + 1, nextY + 1))
+                            break;
+                        else
+                            list.Add(1);
+                    }
+                    if (Is_Room_Exist(nextX, nextY - 1) && room_data[nextX, nextY - 1] == -1)
+                    {
+
+                        //下一层楼梯间不能跟主路径接壤
+                        if (Is_Room_Exist(nextX - 1, nextY - 1) && Is_Room_Occupied(nextX - 1, nextY - 1))
+                            break;
+                        if (Is_Room_Exist(nextX + 1, nextY - 1) && Is_Room_Occupied(nextX + 1, nextY - 1))
+                            break;
+                        else
+                            list.Add(-1);
+                    }
                     if (list.Count > 0)
                     {
                         //开爬！
@@ -154,8 +188,12 @@ public class RoomGenerator : MonoBehaviour
                         nextY += offsetY;
                         dir = 0;
 
-                        //走了两步
+                        //走了一步
                         steps--;
+
+                        //终点不能是楼梯间
+                        if (steps <= 0)
+                            steps = 1;
                     }
                 }
 
@@ -191,18 +229,33 @@ public class RoomGenerator : MonoBehaviour
         return true;
     }
 
+    bool Is_Room_Occupied(int x, int y)
+    {
+        if (room_data[x, y] > 0)
+            return true;
+        return false;
+    }
+
     void GenerateRooms()
     {
         for (int y = 0; y < level_count; y++)
         {
             for (int x = 0; x < room_count; x++)
             {
-                if (room_data[x, y] <= 0) continue;
-
-                int r = Random.Range(0, room_normal_prefabs.Length);
-                var prefab = room_normal_prefabs[r];
-                var room = Instantiate(prefab, this.transform).transform;
-                room.position = new Vector3(room_length * x + room_length * 0.5f, level_height * y + room_half_height, 0f);
+                if (room_data[x, y] <= 0)
+                {
+                    var obstacle = Instantiate(obstacle_prefab, this.transform).transform;
+                    obstacle.position = new Vector3(room_length * x + room_length * 0.5f - room_length * 0.5f, level_height * y + room_half_height, 0f);
+                    obstacle = Instantiate(obstacle_prefab, this.transform).transform;
+                    obstacle.position = new Vector3(room_length * x + room_length * 0.5f + room_length * 0.5f, level_height * y + room_half_height, 0f);
+                }
+                else
+                {
+                    int r = Random.Range(0, room_normal_prefabs.Length);
+                    var prefab = room_normal_prefabs[r];
+                    var room = Instantiate(prefab, this.transform).transform;
+                    room.position = new Vector3(room_length * x + room_length * 0.5f, level_height * y + room_half_height, 0f);
+                }
             }
             var ground = Instantiate(ground_prefab, this.transform).transform;
             ground.gameObject.SetActive(true);
@@ -240,6 +293,7 @@ public class RoomGenerator : MonoBehaviour
                     {
                         prefab = Instantiate(stairs_down_prefab, this.transform).transform;
                         prefab.position = new Vector3(room_length * x + room_length * 0.5f + offset, level_height * y + room_half_height, 0f);
+                        prefab.Find("TransGate").gameObject.AddComponent<Stairs>().is_up = false;
                     }
                 }
 
@@ -250,6 +304,7 @@ public class RoomGenerator : MonoBehaviour
                     {
                         prefab = Instantiate(stairs_up_prefab, this.transform).transform;
                         prefab.position = new Vector3(room_length * x + room_length * 0.5f - offset, level_height * y + room_half_height, 0f);
+                        prefab.Find("TransGate").gameObject.AddComponent<Stairs>().is_up = true;
                     }
                 }
 

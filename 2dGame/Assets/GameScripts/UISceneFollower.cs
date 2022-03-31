@@ -43,7 +43,8 @@ public class UISceneFollower : MonoBehaviour
         var screen_position = Camera.main.WorldToScreenPoint(fellowing_obj.position + offset);
         rect_transform.position = screen_position;
 
-        this.transform.localScale += Vector3.one * (1.0f / auto_destory_after / 60.0f);
+        if (auto_destory_after > 0)
+            this.transform.localScale += Vector3.one * (1.0f / auto_destory_after / 60.0f);
     }
 
     void FadeIn(float seconds)

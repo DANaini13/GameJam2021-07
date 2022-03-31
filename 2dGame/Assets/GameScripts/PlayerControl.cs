@@ -148,6 +148,8 @@ public class PlayerControl : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E)) Hide();
 
+        if (Input.GetKeyDown(KeyCode.E)) OnTransBtnClick();
+
         if (Input.GetMouseButtonDown(1)) TurnOnFlashLight();
 
         if (Input.GetKeyDown(KeyCode.T)) BreakFlashlight();
@@ -222,7 +224,7 @@ public class PlayerControl : MonoBehaviour
         transform.position = typed_arg.position;
     }
 
-    private TransGate current_trans_gate = null;
+    private Stairs current_trans_gate = null;
     private UISceneFollower current_btn = null;
     private GameObject floor_btn = null;
     private UISceneFollower hidding_btn = null;
@@ -235,16 +237,16 @@ public class PlayerControl : MonoBehaviour
         //传送门
         if (other.gameObject.CompareTag("trans_gate"))
         {
-            var hitted_trans_gate = other.gameObject.GetComponent<TransGate>();
-            if (current_trans_gate != null && current_trans_gate.gate_tag == hitted_trans_gate.gate_tag)
+            var hitted_trans_gate = other.gameObject.GetComponent<Stairs>();
+            if (current_trans_gate != null)
                 return;
             current_trans_gate = hitted_trans_gate;
             // 生成button
             var fellower = Instantiate(floor_btn, canvas.transform).GetComponent<UISceneFollower>();
             fellower.fellowing_obj = current_trans_gate.transform;
             current_btn = fellower;
-            var button = fellower.GetComponent<UIButton>();
-            button.on_click = OnTransBtnClick;
+            // var button = fellower.GetComponent<UIButton>();
+            // button.on_click = OnTransBtnClick;
         }
 
         //黄字
@@ -281,7 +283,7 @@ public class PlayerControl : MonoBehaviour
         if (other.gameObject.CompareTag("trans_gate"))
         {
             if (current_trans_gate == null) return;
-            current_btn.FadeOutAfter(1);
+            current_btn.FadeOutAfter(0.15f);
             current_trans_gate = null;
         }
 
@@ -300,7 +302,7 @@ public class PlayerControl : MonoBehaviour
     public void OnTransBtnClick()
     {
         if (current_trans_gate == null) return;
-        current_trans_gate.Trans();
+        current_trans_gate.Trans(this.transform);
     }
 
     public void Hide()
