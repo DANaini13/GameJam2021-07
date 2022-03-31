@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class RoomGenerator : MonoBehaviour
 {
+    public static RoomGenerator _instance;
     [Header("一共有多少层")]
     public int level_count = 4;
     [Header("每层多少个房间")]
-    public int room_count = 9;
+    public static int room_count = 9;
     [Header("每层的第几个房间是楼梯")]
     public int[] stairs_index = new int[3] { 1, 4, 7 };
     [Header("每层楼的高度")]
     public static float level_height = 15.0f;
     [Header("房间长度")]
-    public float room_length = 30.0f;
+    public static float room_length = 30.0f;
     [Header("房间半高，用来放地板")]
     public float room_half_height = 4.5f;
     [Header("岔路最多扩展几步")]
@@ -37,10 +38,10 @@ public class RoomGenerator : MonoBehaviour
     public Transform wall_prefab;
 
     private int[,] room_data;
-    private Vector2Int start_room;
 
     async void Awake()
     {
+        _instance = this;
         if (seed_input.Equals(string.Empty)) seed_input = System.DateTime.Now.ToString();
         seed = seed_input.GetHashCode();
         Random.InitState(seed);
@@ -56,7 +57,14 @@ public class RoomGenerator : MonoBehaviour
 
     void Start()
     {
-        PlayerControl._instance.transform.position = new Vector3(start_room.x * room_length + room_length * 0.5f, start_room.y * level_height, 0f);
+        //玩家传送到起始点
+        int x = path_list[0].x;
+        int y = path_list[0].y;
+        PlayerControl._instance.transform.position = new Vector3(x * room_length + room_length * 0.5f, y * level_height, 0f);
+        //怪物传送到终点
+        x = path_list[path_list.Count - 1].x;
+        y = path_list[path_list.Count - 1].y;
+        MonsterAI._instance.transform.position = new Vector3(x * room_length + room_length * 0.5f, y * level_height, 0f);
     }
 
     [Header("主路径长度")]
@@ -91,7 +99,6 @@ public class RoomGenerator : MonoBehaviour
 
         int nextX = startX;
         int nextY = startY;
-        start_room = new Vector2Int(nextX, nextY);
         room_data[nextX, nextY] = 9;//标记开始房间
         path_list.Add(new Vector2Int(nextX, nextY));
 
@@ -457,5 +464,14 @@ public class RoomGenerator : MonoBehaviour
                 prefab.GetComponent<FloorNumber>().SetNumber(y);
             }
         }
+    }
+
+    public bool HasRoomByPos(Vector3 pos)
+    {
+        int x = Mathf.FloorToInt(pos.x / room_length);
+        int y = Mathf.FloorToInt(pos.y / level_height);
+        if (!Is_Room_Exist(x, y)) return false;
+        if (room_data[x, y] <= 0) return false;
+        return true;
     }
 }

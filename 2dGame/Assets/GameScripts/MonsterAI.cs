@@ -167,20 +167,27 @@ public class MonsterAI : MonoBehaviour
     public AudioClip sfx_change_stay_point;
     void ChangeStayPoints()
     {
+        audio_source.PlayOneShot(sfx_change_stay_point);
         start_stay_time = Time.fixedTime;
         // 找个新的目的地
         bool found = false;
-        int count = stay_points.Count;
-        while (!found)
+        // int count = stay_points.Count;
+        int steps = 0;
+        //尝试一千次，找不到就先不瞬移
+        while (!found || steps < 1000)
         {
-            var position = stay_points[Random.Range(0, count)];
-            //不在玩家视野里凭空出现
-            if (Vector3.Distance(position, player.position) < play_limit_distance) continue;
-            //只在玩家楼层出现
-            if (Mathf.Abs(position.y - player.position.y) > 5) continue;
+            steps++;
+            //在玩家楼层找到一个点
+            var position = player.position;
+            var min = play_limit_distance;
+            var max = RoomGenerator.room_count * RoomGenerator.room_length;
+            var offset = Random.Range(min, max);
+            offset = Random.Range(0, 2) == 0 ? offset : -offset;
+            position.x += offset;
+            //只在存在的房间出现
+            if (!RoomGenerator._instance.HasRoomByPos(position)) continue;
 
             found = true;
-            audio_source.PlayOneShot(sfx_change_stay_point);
             transform.position = position;
         }
 
