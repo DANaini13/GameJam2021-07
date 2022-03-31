@@ -17,7 +17,12 @@ public class RoomGenerator : MonoBehaviour
     [Header("房间半高，用来放地板")]
     public float room_half_height = 4.5f;
 
+    public Transform room_empty;
     public Transform[] room_normal_prefabs;
+    public Transform room_start;
+    public Transform room_end;
+    public Transform room_lantern;
+    public Transform room_ghost;
     public Transform stairs_down_prefab;
     public Transform stairs_up_prefab;
     public Transform level_num_prefab;
@@ -31,6 +36,7 @@ public class RoomGenerator : MonoBehaviour
     void Awake()
     {
         GeneratePath(0);
+        GenerateSpecialRooms();
         GenerateRooms();
         GenerateStairs();
     }
@@ -42,6 +48,7 @@ public class RoomGenerator : MonoBehaviour
 
     [Header("主路径长度")]
     public int path_steps = 12;
+    List<Vector2Int> path_list;
     void GeneratePath(int try_times)
     {
         if (try_times >= 2000)
@@ -50,6 +57,7 @@ public class RoomGenerator : MonoBehaviour
             return;
         }
 
+        path_list = new List<Vector2Int>();
         room_data = new int[room_count, level_count];
 
         //标记楼梯层
@@ -72,6 +80,7 @@ public class RoomGenerator : MonoBehaviour
         int nextY = startY;
         start_room = new Vector2Int(nextX, nextY);
         room_data[nextX, nextY] = 9;//标记开始房间
+        path_list.Add(new Vector2Int(nextX, nextY));
 
         //开始寻路
         int steps = path_steps;
@@ -130,7 +139,10 @@ public class RoomGenerator : MonoBehaviour
 
             //没走到楼梯间，当前房间换成空房间
             if (room_data[nextX, nextY] == 0)
+            {
                 room_data[nextX, nextY] = 1;
+                path_list.Add(new Vector2Int(nextX, nextY));
+            }
             //走到楼梯间
             else if (room_data[nextX, nextY] == -1)
             {
@@ -199,7 +211,10 @@ public class RoomGenerator : MonoBehaviour
 
                 //不爬，那当前房间换成毁坏楼梯房
                 if (!is_climb)
+                {
                     room_data[nextX, nextY] = 111;
+                    path_list.Add(new Vector2Int(nextX, nextY));
+                }
             }
         }
 
@@ -216,10 +231,12 @@ public class RoomGenerator : MonoBehaviour
         //10-向上传送/100-向下传送/110-可上下
         if (room_data[x, y] == -1) room_data[x, y] = 0;
         room_data[x, y] += offset > 0 ? 10 : 100;
+        path_list.Add(new Vector2Int(x, y));
         //爬完之后，定义新房间的标记
         y += offset;
         if (room_data[x, y] == -1) room_data[x, y] = 0;
         room_data[x, y] += offset > 0 ? 100 : 10;
+        path_list.Add(new Vector2Int(x, y));
     }
 
     bool Is_Room_Exist(int x, int y)
@@ -236,13 +253,37 @@ public class RoomGenerator : MonoBehaviour
         return false;
     }
 
+    void GenerateSpecialRooms()
+    {
+        SetNormalRoomTo(8);
+        SetNormalRoomTo(7);
+        SetNormalRoomTo(7);
+    }
+
+    void SetNormalRoomTo(int type)
+    {
+        while (true)
+        {
+            //找到一个普通房间
+            int r = Random.Range(0, path_list.Count);
+            int x = path_list[r].x;
+            int y = path_list[r].y;
+            if (room_data[x,y] == 1)
+            {
+                room_data[x,y] = type;
+                break;
+            }
+        }
+    }
+
     void GenerateRooms()
     {
         for (int y = 0; y < level_count; y++)
         {
             for (int x = 0; x < room_count; x++)
             {
-                if (room_data[x, y] <= 0)
+                var room_type = room_data[x, y];
+                if (room_type <= 0)
                 {
                     var obstacle = Instantiate(obstacle_prefab, this.transform).transform;
                     obstacle.position = new Vector3(room_length * x + room_length * 0.5f - room_length * 0.5f, level_height * y + room_half_height, 0f);
@@ -253,6 +294,18 @@ public class RoomGenerator : MonoBehaviour
                 {
                     int r = Random.Range(0, room_normal_prefabs.Length);
                     var prefab = room_normal_prefabs[r];
+                    //起始房间
+                    if (room_type == 9)
+                        prefab = room_start;
+                    //幽灵房
+                    else if (room_type == 8)
+                        prefab = room_ghost;
+                    //灯笼房
+                    else if (room_type == 7)
+                        prefab = room_lantern;
+                    //电梯房
+                    else if (room_type >= 10)
+                        prefab = room_empty;
                     var room = Instantiate(prefab, this.transform).transform;
                     room.position = new Vector3(room_length * x + room_length * 0.5f, level_height * y + room_half_height, 0f);
                 }

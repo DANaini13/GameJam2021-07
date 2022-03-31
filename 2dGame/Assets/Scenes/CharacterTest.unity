@@ -2550,8 +2550,22 @@ MonoBehaviour:
   stairs_index: 000000000300000006000000
   room_length: 30
   room_half_height: 4.5
+  room_empty: {fileID: 4646080003585674617, guid: ded992b930c8e4795bb9ffc4839419d0,
+    type: 3}
   room_normal_prefabs:
-  - {fileID: 4646080003585674617, guid: ded992b930c8e4795bb9ffc4839419d0, type: 3}
+  - {fileID: 4646080003585674617, guid: 75889aff9f6ea432197eef9f6532db3e, type: 3}
+  - {fileID: 4646080003585674617, guid: 4fee1c5730faf4a4cbe0eb98ad19c900, type: 3}
+  - {fileID: 4646080003585674617, guid: b6ecc0e33eff04b91a1fc4d8746cb7fa, type: 3}
+  - {fileID: 4646080003585674617, guid: f4096e61645ed49ea8317e8021568f3c, type: 3}
+  - {fileID: 4646080003585674617, guid: 5bd54c8d7f27d43d5abc0f8ca1c82952, type: 3}
+  room_start: {fileID: 4646080003585674617, guid: ded992b930c8e4795bb9ffc4839419d0,
+    type: 3}
+  room_end: {fileID: 4646080003585674617, guid: ded992b930c8e4795bb9ffc4839419d0,
+    type: 3}
+  room_lantern: {fileID: 4646080003585674617, guid: a48b0a7a967e21149b7c767c569e598b,
+    type: 3}
+  room_ghost: {fileID: 4646080003585674617, guid: ee719f7e9cd756b429f05c7c958ab499,
+    type: 3}
   stairs_down_prefab: {fileID: 5451428896552700328, guid: 31dec9015bf64f843a7fe81f65727e27,
     type: 3}
   stairs_up_prefab: {fileID: 5451428896552700328, guid: 4a18807c0baf32f49a7571b8aa55e3ac,

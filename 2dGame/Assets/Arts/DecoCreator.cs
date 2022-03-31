@@ -36,7 +36,6 @@ public class DecoCreator : MonoBehaviour
             {
                 if (i == 0) spIndex = prefab.GetComponentInChildren<DecoChangeOnStart>().RandomSetSp();
                 else prefab.GetComponentInChildren<DecoChangeOnStart>().SetSp(spIndex);
-                Debug.Log(spIndex);
             }
             else
             {
