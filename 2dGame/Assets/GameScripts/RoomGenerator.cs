@@ -125,11 +125,11 @@ public class RoomGenerator : MonoBehaviour
                             //爬完换层，重新定一个前进方向
                             nextY += offsetY;
                             dir = 0;
-                            //走了一步
-                            steps--;
-                            //终点不能是楼梯间
-                            if (steps <= 0)
-                                steps = 1;
+                            // //走了一步
+                            // steps--;
+                            // //终点不能是楼梯间
+                            // if (steps <= 0)
+                            //     steps = 1;
                             //下一轮寻路
                             continue;
                         }
@@ -220,12 +220,12 @@ public class RoomGenerator : MonoBehaviour
                         nextY += offsetY;
                         dir = 0;
 
-                        //走了一步
-                        steps--;
+                        // //走了一步
+                        // steps--;
 
-                        //终点不能是楼梯间
-                        if (steps <= 0)
-                            steps = 1;
+                        // //终点不能是楼梯间
+                        // if (steps <= 0)
+                        //     steps = 1;
                     }
                 }
 
