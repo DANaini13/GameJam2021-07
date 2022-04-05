@@ -6,12 +6,19 @@ using UnityEngine;
 public class Stairs : MonoBehaviour
 {
     public bool is_up;
+    public bool is_classroom;
 
-    public void Trans(Transform go)
+    public Vector3 Trans(Transform go)
     {
+        float offsetX = is_classroom ? 0f : 5.8f;
+        float offsetY = is_classroom ? RoomGenerator.classroom_offset : RoomGenerator.level_height;
+
+        var pos = go.position;
         if (is_up)
-            go.Translate(new Vector3(5.8f, RoomGenerator.level_height, 0f));
+            pos += (new Vector3(offsetX, offsetY, 0f));
         else
-            go.Translate(new Vector3(-5.8f, -RoomGenerator.level_height, 0f));
+            pos += (new Vector3(-offsetX, -offsetY, 0f));
+        go.transform.position = pos;
+        return pos;
     }
 }

@@ -17,6 +17,7 @@ public class PlayerControl : MonoBehaviour
     public bool is_monster_target;
     public bool is_game_start = false;
     public Transform ui_bar;
+    public Image light_icon;
 
     private void Awake()
     {
@@ -55,7 +56,7 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         SetWalking(false);
-        ui_bar.localPosition = new Vector3(0f, -80f, 0f);
+        ui_bar.localPosition = new Vector3(0f, -120f, 0f);
     }
 
     void Update()
@@ -153,12 +154,18 @@ public class PlayerControl : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E)) OnTransBtnClick();
 
+        if (Input.GetKeyDown(KeyCode.F)) Flash();
+
+        if (Input.GetKeyDown(KeyCode.E)) Buy();
+
         if (Input.GetMouseButtonDown(1)) TurnOnFlashLight();
 
         if (Input.GetKeyDown(KeyCode.T)) BreakFlashlight();
 
         if (Input.GetKeyDown(KeyCode.LeftShift)) HoldBreath();
         if (Input.GetKeyUp(KeyCode.LeftShift)) StartBreath(false);
+
+        // if (Input.GetKeyDown(KeyCode.Z)) has_battery = true;
     }
 
 
@@ -263,6 +270,20 @@ public class PlayerControl : MonoBehaviour
             hitted_item.CheckGenerate();
         }
 
+        //道具
+        if (other.gameObject.CompareTag("item"))
+        {
+            var hitted_item = other.gameObject.GetComponent<Item>();
+            hitted_item.Interact();
+        }
+
+        //结束
+        if (other.gameObject.CompareTag("end"))
+        {
+            if (is_get_frags)
+                GameWin();
+        }
+
         //怪物
         if (other.gameObject.CompareTag("monster"))
         {
@@ -289,11 +310,24 @@ public class PlayerControl : MonoBehaviour
         {
             if (!is_game_start)
             {
+                start_time = Time.fixedTime;
                 is_game_start = true;
                 ui_bar.DOLocalMoveY(0.0f, 1f);
             }
         }
+
+        //贩卖机
+        if (other.gameObject.CompareTag("seller"))
+        {
+            if (!is_near_seller)
+            {
+                is_near_seller = true;
+            }
+        }
     }
+    private bool is_near_seller;
+
+    private float start_time;
 
     public void OnTriggerExit2D(Collider2D other)
     {
@@ -302,6 +336,13 @@ public class PlayerControl : MonoBehaviour
             if (current_trans_gate == null) return;
             current_btn.FadeOutAfter(0.15f);
             current_trans_gate = null;
+        }
+
+        if (other.gameObject.CompareTag("item"))
+        {
+            var hitted_item = other.gameObject.GetComponent<Item>();
+            if (hitted_item)
+                hitted_item.Exit();
         }
 
         if (other.gameObject.CompareTag("hiding_place"))
@@ -314,12 +355,50 @@ public class PlayerControl : MonoBehaviour
                 hidding_btn = null;
             }
         }
+
+        //贩卖机
+        if (other.gameObject.CompareTag("seller"))
+        {
+            if (is_near_seller)
+            {
+                is_near_seller = false;
+            }
+        }
+    }
+
+    void Buy()
+    {
+        if (!is_near_seller) return;
+        if (has_battery)
+        {
+            battery_ui.transform.localScale = Vector3.one * 1.5f;
+            battery_ui.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce);
+            return;
+        }
+        if (coins < 3)
+        {
+            battery_ui.transform.localScale = Vector3.one * 1.5f;
+            battery_ui.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce);
+            return;
+        }
+
+        coins -= 3;
+        has_battery = true;
+        coin_ui.localScale = Vector3.one * 1.5f;
+        coin_ui.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce);
+        coin_text.text = "x" + coins.ToString();
+        battery_ui.color = Color.white;
+        battery_ui.transform.localScale = Vector3.one * 1.5f;
+        battery_ui.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce);
+
     }
 
     public void OnTransBtnClick()
     {
         if (current_trans_gate == null) return;
-        current_trans_gate.Trans(this.transform);
+        var from = transform.position;
+        var to = current_trans_gate.Trans(this.transform);
+        MonsterAI._instance.PlayerTransport(from, to);
     }
 
     public void Hide()
@@ -359,6 +438,7 @@ public class PlayerControl : MonoBehaviour
 
         audio_source.PlayOneShot(sfx_flashlight_click[1]);
         is_flashlight_on = false;
+        light_icon.color = new Color(1f, 1f, 1f, 0.33f);
         flashlight.intensity = 0f;
         //设置重新开启需要按几次键
         flashlight_reboot_count = UnityEngine.Random.Range(1, 6);
@@ -374,6 +454,7 @@ public class PlayerControl : MonoBehaviour
         //开灯
         if (is_flashlight_on)
         {
+            light_icon.color = Color.white;
             audio_source.PlayOneShot(sfx_flashlight_click[0]);
             flashlight.intensity = flashlight_default_intensity;
 
@@ -389,6 +470,7 @@ public class PlayerControl : MonoBehaviour
         //关灯
         else
         {
+            light_icon.color = new Color(1f, 1f, 1f, 0.33f);
             audio_source.PlayOneShot(sfx_flashlight_click[1]);
             flashlight.intensity = 0.0f;
         }
@@ -481,4 +563,97 @@ public class PlayerControl : MonoBehaviour
             is_monster_target = true;
     }
 
+    public void StartHuntingTime()
+    {
+        StartCoroutine("HuntingTime");
+    }
+    public void StopHuntingTime()
+    {
+        StopCoroutine("HuntingTime");
+    }
+
+    IEnumerator HuntingTime()
+    {
+        while (true)
+        {
+            //玩家电筒处于打开状态
+            if (is_flashlight_on && flashlight_reboot_count <= 0)
+            {
+                if (flashlight.intensity > 0.5f)
+                    flashlight.intensity = 0f;
+                else
+                    flashlight.intensity = 1f;
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    public int coins = 0;
+    public Transform coin_ui;
+    public Text coin_text;
+
+    public void AddCoin()
+    {
+        coins++;
+        coin_ui.localScale = Vector3.one * 1.5f;
+        coin_ui.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce);
+        coin_text.text = "x" + coins.ToString();
+    }
+
+    public Image book_ui;
+    public void GetBook()
+    {
+        is_get_frags = true;
+        book_ui.color = Color.white;
+        book_ui.transform.localScale = Vector3.one * 1.5f;
+        book_ui.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce);
+    }
+
+    public GameObject win_go;
+    public Text win_text;
+    public bool is_get_frags;
+    void GameWin()
+    {
+        win_text.text = ("耗时：" + Mathf.RoundToInt((Time.fixedTime - start_time) / 60f * 10f) * 0.1f + "分钟");
+        win_go.SetActive(true);
+        Destroy(MonsterAI._instance.gameObject);
+    }
+
+    private bool has_battery = true;
+    public Image battery_ui;
+    public AudioClip strong_flash_sfx;
+    void Flash()
+    {
+        if (!is_game_start) return;
+        if (!has_battery) return;
+        //如果怪物在追玩家，则减少追逐时间
+        MonsterAI._instance.Flashed();
+        audio_source.PlayOneShot(strong_flash_sfx);
+        has_battery = false;
+        battery_ui.color = new Color(1f, 1f, 1f, 0.33f);
+        battery_ui.transform.localScale = Vector3.one * 1.5f;
+        battery_ui.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce);
+        strong_flash_light.intensity = 5f;
+        strong_flash_light.gameObject.SetActive(true);
+        StartCoroutine("FlashFade");
+    }
+
+    public UnityEngine.Experimental.Rendering.Universal.Light2D strong_flash_light;
+    IEnumerator FlashFade()
+    {
+        while (true)
+        {
+            strong_flash_light.intensity -= 10.0f * Time.deltaTime;
+            if (strong_flash_light.intensity <= 0)
+            {
+                strong_flash_light.gameObject.SetActive(false);
+                break;
+            }
+            yield return 0;
+        }
+        StopCoroutine("FlashFade");
+    }
+
+    public int clue_num_book = 0;
+    public int clue_num_end = 0;
 }

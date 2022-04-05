@@ -43,8 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42598845d5f45f3418d47af3c8cc9618, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn_needs_to_tap: lamp_tap
-  btn_cannot_tap: lamp_normal
+  btn_needs_to_tap: help_tap
+  btn_cannot_tap: help_normal
   tap_btn_ratio: 0.7
   stay_btn_ratio: 0.3
   empty_ratio: 0

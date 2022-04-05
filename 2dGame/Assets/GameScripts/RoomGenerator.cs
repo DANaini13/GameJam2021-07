@@ -13,6 +13,8 @@ public class RoomGenerator : MonoBehaviour
     public int[] stairs_index = new int[3] { 1, 4, 7 };
     [Header("每层楼的高度")]
     public static float level_height = 15.0f;
+    [Header("室内场景偏移")]
+    public static float classroom_offset = 200.0f;
     [Header("房间长度")]
     public static float room_length = 30.0f;
     [Header("房间半高，用来放地板")]
@@ -23,7 +25,12 @@ public class RoomGenerator : MonoBehaviour
     private int seed;
 
     public Transform room_empty;
+    public Transform room_stairs;
     public Transform[] room_normal_prefabs;
+    public int classroom_count;
+    public Transform[] room_door_prefabs;
+    public Transform[] room_classroom_prefabs;
+    public Transform room_book_prefab;
     public Transform room_start;
     public Transform room_end;
     public Transform room_lantern;
@@ -39,7 +46,7 @@ public class RoomGenerator : MonoBehaviour
 
     private int[,] room_data;
 
-    async void Awake()
+    void Awake()
     {
         _instance = this;
         if (seed_input.Equals(string.Empty)) seed_input = System.DateTime.Now.ToString();
@@ -47,6 +54,7 @@ public class RoomGenerator : MonoBehaviour
         Random.InitState(seed);
 
         GeneratePath(0);
+        GenerateClassroom();
         GenerateSpecialRooms();
         List<Vector2Int> list = GenerateRandomRoom(path_list);
         for (int i = 0; i < expand_steps - 1; i++)
@@ -223,9 +231,9 @@ public class RoomGenerator : MonoBehaviour
                         // //走了一步
                         // steps--;
 
-                        // //终点不能是楼梯间
-                        // if (steps <= 0)
-                        //     steps = 1;
+                        //终点不能是楼梯间
+                        if (steps <= 0)
+                            steps = 1;
                     }
                 }
 
@@ -242,7 +250,12 @@ public class RoomGenerator : MonoBehaviour
         if (steps > 0)
             GeneratePath(try_times + 1);
         else
+        {
+            //标记结束房间
+            Vector2Int end_index = path_list[path_list.Count - 1];
+            room_data[end_index.x, end_index.y] = 6;
             Debug.Log("找到路径，总尝试次数" + try_times);
+        }
     }
 
     void Climb(int x, int y, int offset)
@@ -273,6 +286,16 @@ public class RoomGenerator : MonoBehaviour
         return false;
     }
 
+    public Vector2Int book_room_index;
+    public Vector2Int book_room_classnum;
+    void GenerateClassroom()
+    {
+        //设置一个书本房
+        book_room_index = SetNormalRoomTo(4);
+        for (int i = 0; i < classroom_count - 1; i++)
+            SetNormalRoomTo(2);
+    }
+
     void GenerateSpecialRooms()
     {
         SetNormalRoomTo(8);
@@ -280,20 +303,22 @@ public class RoomGenerator : MonoBehaviour
         SetNormalRoomTo(7);
     }
 
-    void SetNormalRoomTo(int type)
+    Vector2Int SetNormalRoomTo(int type)
     {
+        int x = 0, y = 0;
         while (true)
         {
             //找到一个普通房间
             int r = Random.Range(0, path_list.Count);
-            int x = path_list[r].x;
-            int y = path_list[r].y;
+            x = path_list[r].x;
+            y = path_list[r].y;
             if (room_data[x, y] == 1)
             {
                 room_data[x, y] = type;
                 break;
             }
         }
+        return new Vector2Int(x, y);
     }
 
     List<Vector2Int> GenerateRandomRoom(List<Vector2Int> list)
@@ -309,14 +334,30 @@ public class RoomGenerator : MonoBehaviour
             //左
             if (Is_Room_Exist(v2.x - 1, v2.y) && !Is_Room_Occupied(v2.x - 1, v2.y))
             {
-                room_data[v2.x - 1, v2.y] = 1;
+                //如果是楼梯间，则换成损坏楼梯房
+                if (room_data[v2.x - 1, v2.y] == -1)
+                {
+                    room_data[v2.x - 1, v2.y] = 111;
+                    continue;
+                }
+                //一定概率替换成教室房间
+                int type = Random.Range(0, 3) == 0 ? 3 : 1;
+                room_data[v2.x - 1, v2.y] = type;
                 rooms.Add(new Vector2Int(v2.x - 1, v2.y));
                 continue;
             }
             //右
             if (Is_Room_Exist(v2.x + 1, v2.y) && !Is_Room_Occupied(v2.x + 1, v2.y))
             {
-                room_data[v2.x + 1, v2.y] = 1;
+                //如果是楼梯间，则换成损坏楼梯房
+                if (room_data[v2.x + 1, v2.y] == -1)
+                {
+                    room_data[v2.x + 1, v2.y] = 111;
+                    continue;
+                }
+                //一定概率替换成教室房间
+                int type = Random.Range(0, 3) == 0 ? 3 : 1;
+                room_data[v2.x + 1, v2.y] = type;
                 rooms.Add(new Vector2Int(v2.x + 1, v2.y));
                 continue;
             }
@@ -375,6 +416,7 @@ public class RoomGenerator : MonoBehaviour
     {
         for (int y = 0; y < level_count; y++)
         {
+            int class_num = 0;
             for (int x = 0; x < room_count; x++)
             {
                 var room_type = room_data[x, y];
@@ -389,9 +431,33 @@ public class RoomGenerator : MonoBehaviour
                 {
                     int r = Random.Range(0, room_normal_prefabs.Length);
                     var prefab = room_normal_prefabs[r];
+                    //教室
+                    if (room_type == 2 || room_type == 3 || room_type == 4)
+                    {
+                        //生成室内场景
+                        var rprefab = room_classroom_prefabs[Random.Range(0, room_classroom_prefabs.Length)];
+                        if (room_type == 4)
+                            rprefab = room_book_prefab;
+                        var classroom = Instantiate(rprefab, this.transform).transform;
+                        classroom.position = new Vector3(room_length * x + room_length * 0.5f, level_height * y + room_half_height + classroom_offset, 0f);
+                        prefab = room_door_prefabs[Random.Range(0, room_door_prefabs.Length)];
+                        //设置门牌
+                        var numbers = prefab.GetComponentsInChildren<FloorNumber>();
+                        foreach (var number in numbers)
+                        {
+                            number.SetNumber(y);
+                            number.Set2ndNumber(class_num);
+                        }
+                        if (room_type == 4)
+                            book_room_classnum = new Vector2Int(class_num, y);
+                        class_num++;
+                    }
                     //起始房间
-                    if (room_type == 9)
+                    else if (room_type == 9)
                         prefab = room_start;
+                    //终点
+                    else if (room_type == 6)
+                        prefab = room_end;
                     //幽灵房
                     else if (room_type == 8)
                         prefab = room_ghost;
@@ -400,11 +466,12 @@ public class RoomGenerator : MonoBehaviour
                         prefab = room_lantern;
                     //电梯房
                     else if (room_type >= 10)
-                        prefab = room_empty;
+                        prefab = room_stairs;
                     var room = Instantiate(prefab, this.transform).transform;
                     room.position = new Vector3(room_length * x + room_length * 0.5f, level_height * y + room_half_height, 0f);
                 }
             }
+            //普通楼层碰撞
             var ground = Instantiate(ground_prefab, this.transform).transform;
             ground.gameObject.SetActive(true);
             var length = room_count * room_length;
@@ -419,6 +486,23 @@ public class RoomGenerator : MonoBehaviour
             wall = Instantiate(wall_prefab, this.transform).transform;
             wall.gameObject.SetActive(true);
             wall.position = new Vector3(length, level_height * y, 0f);
+            wall.localScale = new Vector3(1f, level_height, 1f);
+
+            //教室楼层碰撞
+            ground = Instantiate(ground_prefab, this.transform).transform;
+            ground.gameObject.SetActive(true);
+            length = room_count * room_length;
+            ground.position = new Vector3(length * 0.5f, level_height * y + classroom_offset, 0f);
+            ground.localScale = new Vector3(length, 1f, 1f);
+
+            wall = Instantiate(wall_prefab, this.transform).transform;
+            wall.gameObject.SetActive(true);
+            wall.position = new Vector3(0f, level_height * y + classroom_offset, 0f);
+            wall.localScale = new Vector3(1f, level_height, 1f);
+
+            wall = Instantiate(wall_prefab, this.transform).transform;
+            wall.gameObject.SetActive(true);
+            wall.position = new Vector3(length, level_height * y + classroom_offset, 0f);
             wall.localScale = new Vector3(1f, level_height, 1f);
         }
     }
@@ -473,5 +557,11 @@ public class RoomGenerator : MonoBehaviour
         if (!Is_Room_Exist(x, y)) return false;
         if (room_data[x, y] <= 0) return false;
         return true;
+    }
+
+    public Vector2Int GetEndRoomIndex()
+    {
+        Vector2Int v2 = path_list[path_list.Count - 1];
+        return v2;
     }
 }

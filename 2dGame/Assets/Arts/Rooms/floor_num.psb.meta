@@ -245,6 +245,28 @@ ScriptedImporter:
     tessellationDetail: 0
     parentGroupIndex: -1
     uvTransform: {x: 4, y: 4}
+  - name: '-'
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 164
+      y: 130
+      width: 72
+      height: 28
+    spriteID: 1b97d3299e0a56143bce64de15608463
+    internalID: 0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 162, y: 84}
   platformSettings: []
   mosaicLayers: 1
   documentPivot: {x: 0, y: 0}
@@ -264,6 +286,13 @@ ScriptedImporter:
   characterMode: 1
   mosaicPSDLayers: []
   rigPSDLayers:
+  - name: '-'
+    spriteName: '-'
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 1b97d3299e0a56143bce64de15608463
+    layerID: 587
+    mosaicPosition: {x: 164, y: 130}
   - name: 6
     spriteName: 6
     isGroup: 0

@@ -14,51 +14,55 @@ public class MonsterAI : MonoBehaviour
     public float walking_speed_change = 0.5f;
     public float walking_speed_modify;
     public float cheasing_interval;
-    public Transform stay_points_holder;
     public Transform player;
     public AudioSource audio_source;
     private Animator anim;
-    private CapsuleCollider2D collid;
-    private Rigidbody2D rigidb;
+    private BoxCollider2D collid;
+    public float hunting_interval_min = 60f;
+    public float hunting_interval_max = 90f;
+    public float hunting_duration = 30f;
+    public float hunting_interval_timer;
+    public float hunting_interval;
+    private bool is_hunting = false;
 
     private List<Vector3> stay_points = new List<Vector3>();
 
     private void Awake()
     {
         _instance = this;
-        collid = this.GetComponent<CapsuleCollider2D>();
-        rigidb = this.GetComponent<Rigidbody2D>();
+        collid = this.transform.GetComponent<BoxCollider2D>();
+        collid.enabled = false;
         anim = this.transform.GetComponentInChildren<Animator>();
-        int child_count = stay_points_holder.childCount;
-        for (int i = 0; i < child_count; ++i)
-        {
-            stay_points.Add(stay_points_holder.GetChild(i).position);
-        }
+        hunting_interval = Random.Range(hunting_interval_min, hunting_interval_max);
     }
 
+    public float cheasing_timer;
     void Update()
     {
+        CheckHunting();
         CheckCheasingPlayer();
         Haning();
         UpdateStayPoints();
-        UpdateCollider();
         UpdateHeartBeat();
         Shake();
+        if (cheasing_timer > 0f)
+        {
+            cheasing_timer -= Time.deltaTime;
+            if (cheasing_timer <= 0)
+                StopCheasing();
+        }
     }
 
-    public bool is_cheasing = false;
-    public bool cheasing_left = false;
-
-    public float haning_speed_multiplier = 0.5f;
-    private bool is_haning;
+    public bool is_cheasing = false;        //是否在追逐玩家
+    public bool cheasing_left = false;      //是否朝左走
+    public float haning_speed_multiplier = 0.5f;    //闲逛时的移速乘数
+    private bool is_haning;                 //当前是否在闲逛
     void Haning()
     {
+        //如果在追玩家，则退出
         if (is_cheasing) return;
-        if (is_haning)
-        {
-            Cheasing();
-            return;
-        }
+        //否则闲逛
+        if (is_haning) Cheasing();
     }
 
     void CheckCheasingPlayer()
@@ -68,32 +72,74 @@ public class MonsterAI : MonoBehaviour
             Cheasing();
             return;
         }
-        // 0. 判断玩家是否可以被发现
+        // 0. 玩家是否可以被发现
         if (!PlayerControl._instance.is_monster_target) return;
-        // 1. 判断跟玩家是否在同层
+        // 1. 跟玩家是否在同层
         if (Mathf.Abs(transform.position.y - player.position.y) > 5) return;
         // 2. 是否在追捕距离内
         var distance = Vector3.Distance(transform.position, player.position);
         if (distance > cheasing_distance) return;
+
         StartCheasing();
+    }
+
+    void CheckHunting()
+    {
+        //游戏还没开始
+        if (!PlayerControl._instance.is_game_start) return;
+        //正在猎杀，不进入
+        if (is_hunting) return;
+        //正在追逐，不进入
+        if (is_cheasing) return;
+        //倒计时没到期，不进入
+        if (hunting_interval_timer < hunting_interval)
+        {
+            hunting_interval_timer += Time.deltaTime;
+            return;
+        }
+
+        StartHunting();
+    }
+    void StartHunting()
+    {
+        is_cheasing = true;
+        is_hunting = true;
+
+        //刷新到玩家楼层
+        ChangeStayPoints();
+
+        //玩家电筒抽抽
+        PlayerControl._instance.StartHuntingTime();
+
+        //开启碰撞
+        collid.enabled = true;
+
+        anim.SetBool("walking", true);
+
+        //开启计时，追逐结束后离开
+        cheasing_timer = hunting_duration;
     }
 
     void StartCheasing()
     {
         is_cheasing = true;
-        // 1. 判断玩家在左侧还是右侧，向那个方向移动
-        cheasing_left = true;
-        if (player.position.x >= transform.position.x) cheasing_left = false;
+
+        //开启碰撞
+        collid.enabled = true;
+
         anim.SetBool("walking", true);
-        Invoke("StopCheasing", cheasing_interval);
+
+        //开启计时，追逐结束后离开
+        cheasing_timer = cheasing_interval;
     }
-    public ScaryStuffGenerator_Monster scary_item_prefab;
+    public ScaryStuffGenerator_Monster scary_item_prefab, scary_item_hunting_prefab;
+    public float walking_speed_hunting = 5f;
     public float walking_speed_factor = 0.35f;
     public float scary_item_distance = 10f;
     public float scary_item_interval = 0.5f;
     public float scary_item_interval_haning = 1.5f;
     private float scary_item_timer;
-    async void Cheasing()
+    void Cheasing()
     {
         //距离玩家够近时，不间断出现需要玩家点击的字
         if (Vector3.Distance(this.transform.position, player.position) < scary_item_distance)
@@ -103,13 +149,26 @@ public class MonsterAI : MonoBehaviour
             if (scary_item_timer >= interval)
             {
                 scary_item_timer = 0f;
-                var scary_item = Instantiate(scary_item_prefab);
+                var prefab = is_hunting ? scary_item_hunting_prefab : scary_item_prefab;
+                var scary_item = Instantiate(prefab);
                 scary_item.transform.position = this.transform.position;
                 scary_item.CheckGenerate();
             }
         }
 
+        //追逐时，持续朝着玩家移动
+        //也即闲逛状态不会持续计算
+        if (is_cheasing)
+        {
+            cheasing_left = true;
+            if (player.position.x >= transform.position.x) cheasing_left = false;
+        }
+
+        //移动
         var real_speed = (walking_speed + walking_speed_modify) * (is_cheasing ? 1.0f : haning_speed_multiplier);
+        if (is_hunting) real_speed = walking_speed_hunting;
+        if (cannot_move) real_speed = 0f;
+
         if (cheasing_left)
         {
             anim.SetFloat("walking_speed", real_speed * walking_speed_factor);
@@ -126,38 +185,29 @@ public class MonsterAI : MonoBehaviour
 
     void StopCheasing()
     {
+        //当追逐开始若干秒后，强制结束追逐
         is_cheasing = false;
+        collid.enabled = false;
         walking_speed_modify = 0f;
         anim.SetBool("walking", false);
         ChangeStayPoints();
-    }
-
-    void UpdateCollider()
-    {
-        if (is_cheasing)
-        {
-            collid.enabled = true;
-            rigidb.simulated = true;
-        }
-        else if (Vector3.Distance(player.position, this.transform.position) < cheasing_distance)
-        {
-            collid.enabled = false;
-            rigidb.simulated = false;
-        }
-        else
-        {
-            collid.enabled = true;
-            rigidb.simulated = true;
-        }
+        //玩家电筒停止抽抽
+        PlayerControl._instance.StopHuntingTime();
+        //重置猎杀状态
+        is_hunting = false;
+        hunting_interval_timer = 0f;
+        hunting_interval = Random.Range(hunting_interval_min, hunting_interval_max);
     }
 
     private float start_stay_time = 0;
     void UpdateStayPoints()
     {
+        //游戏还没开始
+        if (!PlayerControl._instance.is_game_start) return;
         //追逐中，不换位置
         if (is_cheasing) return;
-        //没在追逐状态，但距离玩家近，不换位置
-        else if (Vector3.Distance(this.transform.position, player.position) < stay_distance) return;
+        //距离玩家很近，不换位置
+        if (Vector3.Distance(this.transform.position, player.position) < stay_distance) return;
         //刷新时间没到，不换位置
         if (Time.fixedTime - start_stay_time < stay_interval) return;
 
@@ -167,25 +217,42 @@ public class MonsterAI : MonoBehaviour
     public AudioClip sfx_change_stay_point;
     void ChangeStayPoints()
     {
-        audio_source.PlayOneShot(sfx_change_stay_point);
+        AudioSource.PlayClipAtPoint(sfx_change_stay_point, this.transform.position);
+
         start_stay_time = Time.fixedTime;
         // 找个新的目的地
         bool found = false;
         // int count = stay_points.Count;
         int steps = 0;
         //尝试一千次，找不到就先不瞬移
-        while (!found || steps < 1000)
+        while (!found && steps < 1000)
         {
             steps++;
             //在玩家楼层找到一个点
             var position = player.position;
             var min = play_limit_distance;
             var max = RoomGenerator.room_count * RoomGenerator.room_length;
-            var offset = Random.Range(min, max);
-            offset = Random.Range(0, 2) == 0 ? offset : -offset;
-            position.x += offset;
+            var offset = 0f;
+            //优先出现在玩家左边
+            if (Random.Range(0, 2) == 0)
+            {
+                if (position.x > play_limit_distance)
+                    offset = Random.Range(0f, position.x - play_limit_distance);
+                else
+                    offset = Random.Range(position.x + play_limit_distance, max);
+            }
+            //右边
+            else
+            {
+                if (position.x < max - play_limit_distance)
+                    offset = Random.Range(position.x + play_limit_distance, max);
+                else
+                    offset = Random.Range(0f, position.x - play_limit_distance);
+            }
+
+            position.x = offset;
             //只在存在的房间出现
-            if (!RoomGenerator._instance.HasRoomByPos(position)) continue;
+            // if (!RoomGenerator._instance.HasRoomByPos(position)) continue;
 
             found = true;
             transform.position = position;
@@ -202,6 +269,7 @@ public class MonsterAI : MonoBehaviour
         anim.SetBool("walking", is_haning);
     }
 
+    //抽抽，表示正在追玩家
     void Shake()
     {
         if (is_cheasing)
@@ -254,5 +322,50 @@ public class MonsterAI : MonoBehaviour
             audio_source.clip = null;
             audio_source.Stop();
         }
+    }
+
+    private bool is_follow_transport = false;
+    private Vector3 follow_transport_pos;
+    public void PlayerTransport(Vector3 from, Vector3 to)
+    {
+        //没在追玩家，不跟着传送
+        if (!is_cheasing) return;
+        //只记录一次玩家传送
+        if (is_follow_transport) return;
+
+        is_follow_transport = true;
+        //算出当前到传送点要走多久
+        float dis = Vector3.Distance(this.transform.position, from);
+        float time = dis / walking_speed;
+        follow_transport_pos = to;
+        Invoke("FollowTransport", time);
+    }
+
+    void FollowTransport()
+    {
+        is_follow_transport = false;
+        //没在追人了，算了
+        if (!is_cheasing) return;
+        //玩家跟自己依然在同一层（可能玩家又跑回来了），不传送
+        if (Mathf.Abs(transform.position.y - player.position.y) < 5) return;
+        //传送
+        this.transform.position = follow_transport_pos;
+    }
+
+    private bool cannot_move;
+    //被玩家闪了
+    public void Flashed()
+    {
+        if (!is_cheasing) return;
+        if (Vector3.Distance(this.transform.position, player.position) > heart_beat_distance) return;
+
+        MonsterAI._instance.cheasing_timer -= 10f;
+        cannot_move = true;
+        Invoke("ContinueMove", 2f);
+    }
+
+    void ContinueMove()
+    {
+        cannot_move = false;
     }
 }

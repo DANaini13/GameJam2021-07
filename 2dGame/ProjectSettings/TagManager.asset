@@ -10,6 +10,9 @@ TagManager:
   - end_gate
   - monster
   - start
+  - item
+  - end
+  - seller
   layers:
   - Default
   - TransparentFX
