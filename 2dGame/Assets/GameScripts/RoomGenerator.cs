@@ -246,15 +246,29 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
+        //=========寻路结束了
         //步长没有走完，说明没找到路径，重试
         if (steps > 0)
             GeneratePath(try_times + 1);
+        //========步长走完了
         else
         {
+            //算一下空房间数够不够
+            int count = 0;
+            foreach (var room in path_list)
+                if (room_data[room.x, room.y] == 1)
+                    count++;
+
+            //房间数不够，继续重试（加特殊房，和终点房）
+            if (count < classroom_count + 2 + 1)
+                GeneratePath(try_times + 1);
             //标记结束房间
-            Vector2Int end_index = path_list[path_list.Count - 1];
-            room_data[end_index.x, end_index.y] = 6;
-            Debug.Log("找到路径，总尝试次数" + try_times);
+            else
+            {
+                Vector2Int end_index = path_list[path_list.Count - 1];
+                room_data[end_index.x, end_index.y] = 6;
+                Debug.Log("找到路径，总尝试次数" + try_times);
+            }
         }
     }
 
@@ -292,6 +306,7 @@ public class RoomGenerator : MonoBehaviour
     {
         //设置一个书本房
         book_room_index = SetNormalRoomTo(4);
+        //普通教室
         for (int i = 0; i < classroom_count - 1; i++)
             SetNormalRoomTo(2);
     }
@@ -300,25 +315,41 @@ public class RoomGenerator : MonoBehaviour
     {
         SetNormalRoomTo(8);
         SetNormalRoomTo(7);
-        SetNormalRoomTo(7);
     }
 
     Vector2Int SetNormalRoomTo(int type)
     {
         int x = 0, y = 0;
-        while (true)
+
+        //复制一份list
+        List<Vector2Int> list = new List<Vector2Int>();
+        foreach (var room in path_list)
+            list.Add(room);
+
+        //随机添加进新的list
+        List<Vector2Int> random_list = new List<Vector2Int>();
+        for (int i = 0; i < list.Count; i++)
         {
-            //找到一个普通房间
-            int r = Random.Range(0, path_list.Count);
-            x = path_list[r].x;
-            y = path_list[r].y;
+            int r = Random.Range(0, list.Count);
+            random_list.Add(list[r]);
+            list.RemoveAt(r);
+            i--;
+        }
+
+        foreach (var room in random_list)
+        {
+            //找到第一个空房间
+            x = room.x;
+            y = room.y;
             if (room_data[x, y] == 1)
             {
                 room_data[x, y] = type;
-                break;
+                return new Vector2Int(x, y);
             }
         }
-        return new Vector2Int(x, y);
+
+        Debug.LogError("找不到多余的空房间了");
+        return new Vector2Int(-1, -1);
     }
 
     List<Vector2Int> GenerateRandomRoom(List<Vector2Int> list)
